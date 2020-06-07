@@ -1,0 +1,193 @@
+from django import forms
+from django.db import models
+from django.contrib import admin, messages
+from django.forms import TextInput, Textarea
+
+# for admin logs
+from django.contrib.admin.models import LogEntry
+
+from .models import *
+from .dbconf import *
+
+class ProductAdmin(admin.ModelAdmin):
+	formfield_overrides = {
+		models.DecimalField: {'widget': TextInput(attrs={'size':'20'})},
+		models.IntegerField: {'widget': TextInput(attrs={'size':'20'})},
+        models.CharField: {'widget': TextInput(attrs={'size':'40'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
+    }
+	fieldsets = [
+		(None,			{'fields': ['product_name','product_category','hsn_code']}),
+		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate']}),
+		(None,		{'fields' : ['remarks']})	
+		]
+	readonly_fields = ()
+
+	# advantage of using this that we can disable selected fields
+	
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		disable_fields = [
+						'product_name',
+						'product_category',
+						'hsn_code',
+						'basic_rate',
+						'tax_rate',
+						'export_tax_rate',
+						'remarks']
+		# change this to add custom fields
+		response = valid_action(request, form, disable_fields)
+
+		form = response
+
+		return form
+	
+
+	def save_model(self, request, obj, form, change):
+		# editing form after submission
+		#obj.hsn_code = 3244
+		super(ProductAdmin, self).save_model(request, obj, form, change)
+
+	##############     for filtering            ##########333
+	#list_display = ('title','created_date','tax')
+
+class ClientAdmin(admin.ModelAdmin):
+	formfield_overrides = {
+		models.DecimalField: {'widget': TextInput(attrs={'size':'20'})},
+		models.IntegerField: {'widget': TextInput(attrs={'size':'20'})},
+        models.CharField: {'widget': TextInput(attrs={'size':'40'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
+    }
+	fieldsets = [
+		(None,			{'fields': ['client_name','client_category','btc','gstin']}),
+		('Contact', {'fields': ['contact_person','telephone_main','telephone_extra','email']}),
+		('Address',		{'fields' : ['address','city','pin_code','state','country']}),
+		('Lead Details', {'fields' : ['lead_source','client_rank','remarks']}),
+		]
+	readonly_fields = ('balance','latest_dsr_id')
+
+	# advantage of using this that we can disable selected fields
+	
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		# do not add anything here which is already in readonly list
+		disable_fields = [
+						'client_name',
+						'client_category',
+						'btc',
+						'gstin',
+						'contact_person',
+						'telephone_main',
+						'telephone_extra',
+						'email',
+						'address',
+						'city',
+						'state',
+						'pin_code',
+						'city',
+						'country',
+						'lead_source',
+						'client_rank',
+						'remarks']
+		# change this to add custom fields
+		response = valid_action(request, form, disable_fields)
+
+		form = response
+
+		return form
+	
+
+	def save_model(self, request, obj, form, change):
+		super(ClientAdmin, self).save_model(request, obj, form, change)
+
+
+class LogEntryAdmin(admin.ModelAdmin):
+
+	date_hierarchy = 'action_time'
+
+	#readonly_fields = LogEntry._meta.get_all_field_names()
+
+	list_filter = [
+	    'user',
+	    'content_type',
+	    'action_flag'
+	]
+
+	search_fields = [
+	    'object_repr',
+	    'change_message'
+	]
+
+
+	list_display = [
+	    'action_time',
+	    'user',
+	    'content_type',
+	    'action_flag_',
+	    'change_message',
+	]
+
+	def has_add_permission(self, request):
+	    return False
+
+	def has_change_permission(self, request, obj=None):
+	    return request.user.is_superuser and request.method != 'POST'
+
+	def has_delete_permission(self, request, obj=None):
+	    return False
+
+	def action_flag_(self, obj):
+	    flags = {
+	        1: "Addition",
+	        2: "Changed",
+	        3: "Deleted",
+	    }
+	    return flags[obj.action_flag]
+	"""
+	def object_link(self, obj):
+	    if obj.action_flag == DELETION:
+	        link = escape(obj.object_repr)
+	    else:
+	        ct = obj.content_type
+	        link = u'<a href="%s">%s</a>' % (
+	            reverse('admin:%s_%s_change' % (ct.app_label, ct.model), args=[obj.object_id]),
+	            escape(obj.object_repr),
+	        )
+	    return link
+	object_link.allow_tags = True
+	object_link.admin_order_field = 'object_repr'
+	object_link.short_description = u'object'
+	"""
+
+
+# just comment the line of the model below you want to hide from the admin dashboard
+
+admin.site.register(Product, ProductAdmin)
+admin.site.register(Client, ClientAdmin)
+admin.site.register(LogEntry, LogEntryAdmin)
+
+
+## This can be kept as a substitue of get_form, preventing users from updating if required 
+"""
+put this in header
+from django.contrib.auth import get_permission_codename
+
+def has_change_permission(self, request, obj=None):
+	
+	Return True if the given request has permission to change the given
+	Django model instance, the default implementation doesn't examine the
+	`obj` parameter.
+	Can be overridden by the user in subclasses. In such case it should
+	return True if the given request has permission to change the `obj`
+	model instance. If `obj` is None, this should return True if the given
+	request has permission to change *any* object of the given type.
+	
+	opts = self.opts
+	codename = get_permission_codename('change', opts)
+	response = request.user.has_perm("%s.%s" % (opts.app_label, codename))
+	#print(request)
+	#if response:
+	#	response = valid_action(request)
+	print('check')
+	return True
+"""
