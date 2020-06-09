@@ -9,6 +9,8 @@ from django.contrib.admin.models import LogEntry
 from .models import *
 from .dbconf import *
 
+
+
 class ProductAdmin(admin.ModelAdmin):
 	formfield_overrides = {
 		models.DecimalField: {'widget': TextInput(attrs={'size':'20'})},
@@ -100,6 +102,10 @@ class ClientAdmin(admin.ModelAdmin):
 	def save_model(self, request, obj, form, change):
 		super(ClientAdmin, self).save_model(request, obj, form, change)
 
+class DsrAdmin(admin.ModelAdmin):
+	raw_id_fields = ('client_id',)
+	pass
+		
 
 class LogEntryAdmin(admin.ModelAdmin):
 
@@ -158,13 +164,12 @@ class LogEntryAdmin(admin.ModelAdmin):
 	object_link.admin_order_field = 'object_repr'
 	object_link.short_description = u'object'
 	"""
-
-
-# just comment the line of the model below you want to hide from the admin dashboard
-
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Client, ClientAdmin)
-admin.site.register(LogEntry, LogEntryAdmin)
+# admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(Dsr,DsrAdmin)
+
+# just comment the line of the model below you want to hide from the admin dashboard
 
 
 ## This can be kept as a substitue of get_form, preventing users from updating if required 

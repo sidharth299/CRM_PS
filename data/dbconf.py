@@ -42,3 +42,4 @@ def valid_action(request, form, disable_fields):
 			messages.add_message(request, messages.INFO, error_message)
 
 	return response
+

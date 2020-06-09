@@ -1,3 +1,5 @@
+
+
 ###    defutl values   #####  
 
 DEFAULT_STATE = 'Maharashtra'
@@ -19,14 +21,43 @@ MAX_REMARKS = 2000
 
 MAX_PRODUCT_CATEGORY = 30
 MAX_CLIENT_CATEGORY = 15
-MAX_BTC = 7
-MAX_LEAD_SOURCE = 9
+MAX_BTC = 8
+MAX_LEAD_SOURCE = 10
 MAX_COUNTRY = 8
 MAX_STATE = 30
+
+MAX_CONTACT_MODE = 12
+MAX_TAX_TYPE = 20
+MAX_SAMPLE_STATUS = 8
 
 
 ####   choices     ###
 ## IMPORTANT !!! updated the max_legth above also when you make add any new element to the categories
+
+
+CHOICES_SAMPLE_STATUS = (
+	("Sent","Sent"),
+	("Pending","Pending"),
+	("Passed","Passed"),
+	("Failed","Failed"),
+)
+
+CHOICES_TAX_TYPE = (
+	("Maharashtra","Maharashtra"),
+	("Outside Maharashtra","Outside Maharashtra"),
+	("Indirect Export","Indirect Export"),
+	("Direct Export","Direct Export"),
+)
+
+CHOICES_CONTACT_MODE = (
+	("Visit","Visit"),
+	("Telephone","Telephone"),
+	("Email","Email"),
+	("WhatsApp","WhatsApp"),
+	("No Response","No Response"),
+	("Others", "Others"),
+)
+
 
 CHOICES_PRODUCT_CATEGORY = ( 
     ("Agro Chemical","Agro Chemical"), 
@@ -41,8 +72,8 @@ CHOICES_PRODUCT_CATEGORY = (
 
 CHOICES_CLIENT_CATEGORY = ( 
     ("Agrochem","Agrochem"), 
-    ("Construction", "Construction"), 
-    ("Others", "Others"), 
+    ("Construction","Construction"), 
+    ("Others","Others"), 
 )
 
 CHOICES_BTC = ( 
