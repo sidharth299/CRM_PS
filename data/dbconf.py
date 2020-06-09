@@ -8,9 +8,6 @@ from django.contrib import messages
 
 from .models import *
 
-# for dynamic objects
-#from data import models
-
 def valid_action(request, form, disable_fields):
 	response = form
 
@@ -42,4 +39,3 @@ def valid_action(request, form, disable_fields):
 			messages.add_message(request, messages.INFO, error_message)
 
 	return response
-

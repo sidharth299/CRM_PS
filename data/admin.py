@@ -10,7 +10,6 @@ from .models import *
 from .dbconf import *
 
 
-
 class ProductAdmin(admin.ModelAdmin):
 	formfield_overrides = {
 		models.DecimalField: {'widget': TextInput(attrs={'size':'20'})},
@@ -170,29 +169,3 @@ admin.site.register(Client, ClientAdmin)
 admin.site.register(Dsr,DsrAdmin)
 
 # just comment the line of the model below you want to hide from the admin dashboard
-
-
-## This can be kept as a substitue of get_form, preventing users from updating if required 
-"""
-put this in header
-from django.contrib.auth import get_permission_codename
-
-def has_change_permission(self, request, obj=None):
-	
-	Return True if the given request has permission to change the given
-	Django model instance, the default implementation doesn't examine the
-	`obj` parameter.
-	Can be overridden by the user in subclasses. In such case it should
-	return True if the given request has permission to change the `obj`
-	model instance. If `obj` is None, this should return True if the given
-	request has permission to change *any* object of the given type.
-	
-	opts = self.opts
-	codename = get_permission_codename('change', opts)
-	response = request.user.has_perm("%s.%s" % (opts.app_label, codename))
-	#print(request)
-	#if response:
-	#	response = valid_action(request)
-	print('check')
-	return True
-"""

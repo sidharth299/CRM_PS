@@ -1,5 +1,3 @@
-
-
 ###    defutl values   #####  
 
 DEFAULT_STATE = 'Maharashtra'
