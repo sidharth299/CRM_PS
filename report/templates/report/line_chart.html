@@ -1,0 +1,26 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+
+<h5>Line Chart of Daily Sales Report By <a href="#">{{username}}</a></h5>
+
+<table class="table">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Number of Calls</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r in report %}
+    <tr>
+      <td>{{r.date_of_contact}}</td>
+      <td>{{r.count}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

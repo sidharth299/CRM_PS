@@ -35,8 +35,11 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     #--add new app craeted here--#
     'data.apps.DataConfig',
-    #'report.apps.ReportConfig',
+    'report.apps.ReportConfig',
     #---------------------#
+    # 'crispy_forms',
+    # <!--{% load crispy_forms_tags %}-->
+    #----------------------#
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

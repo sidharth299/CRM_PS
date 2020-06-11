@@ -9,7 +9,6 @@ from django.contrib.admin.models import LogEntry
 from .models import *
 from .dbconf import *
 
-
 class ProductAdmin(admin.ModelAdmin):
 	formfield_overrides = {
 		models.DecimalField: {'widget': TextInput(attrs={'size':'20'})},
@@ -47,6 +46,7 @@ class ProductAdmin(admin.ModelAdmin):
 	def save_model(self, request, obj, form, change):
 		# editing form after submission
 		#obj.hsn_code = 3244
+		obj.created_by = request.user
 		super(ProductAdmin, self).save_model(request, obj, form, change)
 
 	##############     for filtering            ##########333
@@ -99,12 +99,25 @@ class ClientAdmin(admin.ModelAdmin):
 	
 
 	def save_model(self, request, obj, form, change):
+		obj.created_by = request.user
 		super(ClientAdmin, self).save_model(request, obj, form, change)
 
 class DsrAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_id',)
+	readonly_fields = ('created_by',)
+
+	def save_model(self, request, obj, form, change):
+		obj.created_by = request.user
+		super(DsrAdmin, self).save_model(request, obj, form, change)
+
+class SampleAdmin(admin.ModelAdmin):
 	pass
-		
+class SaleAdmin(admin.ModelAdmin):
+	pass
+class BillAdmin(admin.ModelAdmin):
+	pass
+class PaymentAdmin(admin.ModelAdmin):
+	pass
 
 class LogEntryAdmin(admin.ModelAdmin):
 
@@ -163,9 +176,16 @@ class LogEntryAdmin(admin.ModelAdmin):
 	object_link.admin_order_field = 'object_repr'
 	object_link.short_description = u'object'
 	"""
-admin.site.register(Product, ProductAdmin)
-admin.site.register(Client, ClientAdmin)
-# admin.site.register(LogEntry, LogEntryAdmin)
-admin.site.register(Dsr,DsrAdmin)
 
 # just comment the line of the model below you want to hide from the admin dashboard
+
+admin.site.register(Product, ProductAdmin)
+admin.site.register(Client, ClientAdmin)
+
+admin.site.register(LogEntry, LogEntryAdmin)
+
+admin.site.register(Dsr,DsrAdmin)
+admin.site.register(Sample,SampleAdmin)
+admin.site.register(Sale,SaleAdmin)
+admin.site.register(Bill,BillAdmin)
+admin.site.register(Payment,PaymentAdmin)

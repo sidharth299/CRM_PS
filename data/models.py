@@ -1,4 +1,4 @@
-#from django.conf import settings
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -17,6 +17,7 @@ class Product(models.Model):
     tax_rate         = models.DecimalField(decimal_places = 2, max_digits = 4)
     export_tax_rate  = models.DecimalField(decimal_places = 2, max_digits = 4)
     remarks          = models.CharField(blank = True, max_length = MAX_REMARKS)
+    created_by       = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.product_name
@@ -41,6 +42,7 @@ class Client(models.Model):
     remarks          = models.CharField(blank = True, max_length = MAX_REMARKS)
     balance          = models.IntegerField(default = 0)
     latest_dsr_id    = models.PositiveIntegerField(blank = True, null = True)
+    created_by       = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
 
     def __str__(self):
@@ -61,6 +63,7 @@ class Dsr(models.Model):
     client_rank     = models.PositiveSmallIntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(7)])
     failed_sale     = models.BooleanField(default = False) 
     successful_sale = models.BooleanField(default = False)
+    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.action
@@ -74,12 +77,13 @@ class Sample(models.Model):
     sample_quantity = models.PositiveIntegerField()
     sample_status   = models.CharField(choices = CHOICES_SAMPLE_STATUS, max_length = MAX_SAMPLE_STATUS)
     remarks         = models.CharField(blank = True, max_length = MAX_REMARKS)
+    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.product_id
 
 # only Admin/Accountants
-class Sales(models.Model):
+class Sale(models.Model):
 
     invoice_number  = models.AutoField(primary_key = True)
     sale_date       = models.DateField(default = timezone.now)
@@ -92,6 +96,7 @@ class Sales(models.Model):
     amount_paid     = models.PositiveIntegerField()
     fisrt_date      = models.DateField(default = timezone.now)
     last_date       = models.DateField(default = timezone.now)
+    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     
     def __str__(self):
         return self.invoice_number
@@ -99,7 +104,7 @@ class Sales(models.Model):
 # not to be displayed to anyone
 class Bill(models.Model):
     
-    invoice_number  = models.ForeignKey(Sales, on_delete = models.PROTECT)
+    invoice_number  = models.ForeignKey(Sale, on_delete = models.PROTECT)
     product_id      = models.ForeignKey(Product, on_delete = models.PROTECT)
     basic_rate      = models.PositiveIntegerField(blank = True, null = True)
     quantity        = models.PositiveIntegerField()
@@ -107,14 +112,16 @@ class Bill(models.Model):
     cgst            = models.DecimalField(decimal_places = 2, max_digits = 20)  
     sgst            = models.DecimalField(decimal_places = 2, max_digits = 20)
     export_sale     = models.DecimalField(decimal_places = 2, max_digits = 20)
+    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.product_id
 
 class Payment(models.Model):
-    invoice_number  = models.ForeignKey(Sales, on_delete = models.PROTECT)
+    invoice_number  = models.ForeignKey(Sale, on_delete = models.PROTECT)
     date            = models.DateField(default = timezone.now)
     amount_received = models.PositiveIntegerField()
+    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     
     def __str__(self):
         return self.payment_recieved

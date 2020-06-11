@@ -22,5 +22,5 @@ admin.site.site_title = 'Malhar Industries CRM'
 urlpatterns = [
 	# changed this from 'admin/' -> ''
     path('', admin.site.urls),
-    #path('report/', include('report.urls')),
+    path('report/', include('report.urls')),
 ]
