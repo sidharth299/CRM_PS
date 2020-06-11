@@ -17,18 +17,19 @@ def line_chart(request):
 		form = LineChart(request.POST)
 		if form.is_valid():
 			username = form.cleaned_data['username']
-			user_id = (User.objects.filter(username=username).first()).id
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
 
+			user_id = (User.objects.filter(username=username).first()).id
+
 			# count is referred as calls here
 			# 1 visit -> 1 call
-			# other mode of communication ->
+			# other mode of communication -> 1/3 call
 
 			# using RAW SQL in django
 			res = Dsr.objects.raw('''SELECT  id,date_of_contact,
-									SUM(CASE WHEN contact_mode in ('Visit','Email','WhatsApp') THEN 3
-											WHEN contact_mode = 'Telephone' THEN 1
+									SUM(CASE WHEN contact_mode = 'Visit' THEN 3
+											WHEN contact_mode in ('Telephone','Email','WhatsApp') THEN 1
 											ELSE 0 END) 
 									AS count 
 									FROM data_dsr

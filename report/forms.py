@@ -1,5 +1,5 @@
 # used creating a form from a Model
-from django.forms import ModelForm
+# from django.forms import ModelForm
 # creating a normal form
 from django import forms
 
