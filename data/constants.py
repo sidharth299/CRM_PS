@@ -2,6 +2,8 @@
 
 DEFAULT_STATE = 'Maharashtra'
 DEFAULT_COUNTRY = 'India'
+DEFAULT_ZONE="NAGPUR"
+DEFAULT_LEAD_SOURCE="Others"
 
 ###    max values      #####
 
@@ -27,6 +29,8 @@ MAX_STATE = 30
 MAX_CONTACT_MODE = 12
 MAX_TAX_TYPE = 20
 MAX_SAMPLE_STATUS = 8
+
+MAX_ZONE=8
 
 
 ####   choices     ###
@@ -90,6 +94,16 @@ CHOICES_COUNTRY = (
 	("India","India"),
 	("Overseas","Overseas"),
 	)
+
+CHOICES_ZONE=(
+	("NORTH","NORTH"),
+	("SOUTH","SOUTH"),
+	("EAST","EAST"),
+	("WEST","WEST"),
+	("CENTRAL","CENTRAL"),
+	("EXPORT","EXPORT"),
+	("NAGPUR","NAGPUR"),
+)
 
 CHOICES_STATE = (
 	("Andhra Pradesh","Andhra Pradesh"),

@@ -62,7 +62,7 @@ class ClientAdmin(admin.ModelAdmin):
 	fieldsets = [
 		(None,			{'fields': ['client_name','client_category','btc','gstin']}),
 		('Contact', {'fields': ['contact_person','telephone_main','telephone_extra','email']}),
-		('Address',		{'fields' : ['address','city','pin_code','state','country']}),
+		('Address',		{'fields' : ['address','city','pin_code','state','country','zone']}),
 		('Lead Details', {'fields' : ['lead_source','client_rank','remarks']}),
 		]
 	readonly_fields = ('balance','latest_dsr_id')
@@ -87,6 +87,7 @@ class ClientAdmin(admin.ModelAdmin):
 						'pin_code',
 						'city',
 						'country',
+						'zone',
 						'lead_source',
 						'client_rank',
 						'remarks']
