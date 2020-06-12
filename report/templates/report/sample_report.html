@@ -1,0 +1,35 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Sample report of user: <a href="#">{{username}}</a></h5>
+
+<table class="table">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">SENT DATE</th>
+      <th scope="col">CLIENT NAME</th>
+      <th scope="col">CITY</th>
+      <th scope="col">PRODUCT NAME</th>
+      <th scope="col">QUANTITY</th>
+      <th scope="col">STATUS</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r in report %}
+    <tr>
+      <td>{{r.id}}</td>
+      <td>{{r.sent_date}}</td>
+      <td>{{r.client_id_id}}</td>
+      <td>{{r.city}}</td>
+      <td>{{r.product_id_id}}</td>
+      <td>{{r.sample_quantity}}</td>
+      <td>{{r.sample_status}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

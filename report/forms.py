@@ -17,6 +17,19 @@ class LineChart(forms.Form):
 								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
 								required = True)
 
+class SampleReport(forms.Form):
+	username = forms.ModelChoiceField(
+									queryset=User.objects.all().order_by('username'),
+									help_text='select the username')
+	start_date = forms.DateField(
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+								required = True)
+	end_date   = forms.DateField(
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+								required = True)
+
+
+
 """
 # an example of how to generate forms from model
 class UserForm(ModelForm):

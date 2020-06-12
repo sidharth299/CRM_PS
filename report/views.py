@@ -50,3 +50,34 @@ def line_chart(request):
 		payload['form'] = LineChart()
 	
 	return render(request,'report/report_form.html',payload)
+
+@login_required(login_url='/login/')
+def sample_report(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = SampleReport(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			first_date = form.cleaned_data['start_date']
+			last_date = form.cleaned_data['end_date']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			# using RAW SQL in django
+			res = Sample.objects.raw('''SELECT  id, sent_date, client_id_id, city, product_id_id, sample_quantity, sample_status
+									FROM data_sample
+									WHERE created_by_id = '{0}' AND (sent_date BETWEEN '{1}' AND '{2}') order by sent_date
+									'''.format(user_id,first_date,last_date)
+								)
+
+			payload = {'report':res,'username':username}
+			return render(request,'report/sample_report.html',payload)
+		else:
+			payload['form'] = LineChart()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = LineChart()
+	
+	return render(request,'report/report_form.html',payload)
