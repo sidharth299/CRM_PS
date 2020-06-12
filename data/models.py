@@ -81,7 +81,7 @@ class Sample(models.Model):
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.product_id
+        return str(self.product_id)
 
 # only Admin/Accountants
 class Sale(models.Model):

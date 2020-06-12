@@ -112,7 +112,42 @@ class DsrAdmin(admin.ModelAdmin):
 		super(DsrAdmin, self).save_model(request, obj, form, change)
 
 class SampleAdmin(admin.ModelAdmin):
-	pass
+	formfield_overrides = {
+		models.DecimalField: {'widget': TextInput(attrs={'size':'20'})},
+		models.IntegerField: {'widget': TextInput(attrs={'size':'20'})},
+        models.CharField: {'widget': TextInput(attrs={'size':'40'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
+    }
+	
+	readonly_fields = ('created_by',)
+
+	# advantage of using this that we can disable selected fields
+	
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		# do not add anything here which is already in readonly list
+		disable_fields = [
+						'client_id',
+						'sent_date',
+						'city',
+						'product_id',
+						'sample_quantity',
+						'sample_status',
+						'remarks'
+						]
+		# change this to add custom fields
+		response = valid_action(request, form, disable_fields)
+
+		form = response
+
+		return form
+	
+
+	def save_model(self, request, obj, form, change):
+		obj.created_by = request.user
+		super(SampleAdmin, self).save_model(request, obj, form, change)
+
+
 class SaleAdmin(admin.ModelAdmin):
 	pass
 class BillAdmin(admin.ModelAdmin):
