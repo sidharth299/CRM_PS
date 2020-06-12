@@ -32,4 +32,27 @@
   </tbody>
 </table>
 
+<h5>Sample success ratio table</h5>
+
+<table class="table">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">STATUS</th>
+      <th scope="col">COUNT</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r2 in report2 %}
+    <tr>
+      <td>{{r2.sample_status}}</td>
+      <td>{{r2.count}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+
 {% endblock %}

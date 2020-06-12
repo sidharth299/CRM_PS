@@ -71,7 +71,14 @@ def sample_report(request):
 									'''.format(user_id,first_date,last_date)
 								)
 
-			payload = {'report':res,'username':username}
+
+			res2 = Sample.objects.raw('''SELECT  id, sample_status, count(id) as count
+									FROM data_sample
+									WHERE created_by_id = '{0}' AND (sent_date BETWEEN '{1}' AND '{2}') group by sample_status
+									'''.format(user_id,first_date,last_date)
+								)
+
+			payload = {'report':res,'report2':res2,'username':username}
 			return render(request,'report/sample_report.html',payload)
 		else:
 			payload['form'] = LineChart()
