@@ -3,6 +3,9 @@ from django.db import models
 from django.contrib import admin, messages
 from django.forms import TextInput, Textarea
 
+import csv
+from django.http import HttpResponse
+
 # for admin logs
 from django.contrib.admin.models import LogEntry
 
@@ -66,9 +69,9 @@ class ClientAdmin(admin.ModelAdmin):
 		('Lead Details', {'fields' : ['lead_source','client_rank','remarks']}),
 		]
 	readonly_fields = ('balance','latest_dsr_id')
-
-	# advantage of using this that we can disable selected fields
+	list_display = ('client_name','client_category','zone')
 	
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		# do not add anything here which is already in readonly list

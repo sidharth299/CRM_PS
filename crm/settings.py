@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     #--add new app craeted here--#
     'data.apps.DataConfig',
     'report.apps.ReportConfig',
+    'autofixture',
     #---------------------#
     # 'crispy_forms',
     # <!--{% load crispy_forms_tags %}-->
