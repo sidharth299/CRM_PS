@@ -33,10 +33,10 @@ ALLOWED_HOSTS = []
 # Add every newly created app here
 
 INSTALLED_APPS = [
-    #--add new app craeted here--#
+    #--add new app created here--#
     'data.apps.DataConfig',
     'report.apps.ReportConfig',
-    'autofixture',
+    # 'autofixture',
     #---------------------#
     # 'crispy_forms',
     # <!--{% load crispy_forms_tags %}-->
