@@ -1,5 +1,6 @@
+import csv
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-
 from django.shortcuts import render
 
 from report.forms import *
@@ -19,6 +20,7 @@ def line_chart(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -39,6 +41,18 @@ def line_chart(request):
 								)
 			for r in res:
 				r.count = round(r.count/3,2)
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="LineChart.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['Date of Contact','Number of Calls'])
+				for r in res:
+					writer.writerow([r.date_of_contact,r.count])
+				return response
+
 
 			payload = {'report':res,'username':username}
 			return render(request,'report/line_chart.html',payload)
