@@ -94,13 +94,13 @@ class Sale(models.Model):
     tax_type        = models.CharField(choices = CHOICES_TAX_TYPE, max_length = MAX_TAX_TYPE)
     is_sample       = models.BooleanField(default = False)
     total_amount    = models.PositiveIntegerField()
-    amount_paid     = models.PositiveIntegerField()
-    fisrt_date      = models.DateField(default = timezone.now)
+    amount_paid     = models.PositiveIntegerField(default=0)
+    first_date      = models.DateField(default = timezone.now)
     last_date       = models.DateField(default = timezone.now)
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.invoice_number
+        return str(self.invoice_number)
 
 # not to be displayed to anyone
 class Bill(models.Model):
@@ -113,10 +113,11 @@ class Bill(models.Model):
     cgst            = models.DecimalField(decimal_places = 2, max_digits = 20)  
     sgst            = models.DecimalField(decimal_places = 2, max_digits = 20)
     export_sale     = models.DecimalField(decimal_places = 2, max_digits = 20)
-    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    # we do not need a created by here can fetch from Sales table
+    # created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.product_id
+        return str(self.product_id)
 
 class Payment(models.Model):
     invoice_number  = models.ForeignKey(Sale, on_delete = models.PROTECT)
@@ -125,7 +126,7 @@ class Payment(models.Model):
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.payment_recieved
+        return str (self.payment_recieved)
 
 """
     def publish(self):

@@ -151,10 +151,21 @@ class SampleAdmin(admin.ModelAdmin):
 		super(SampleAdmin, self).save_model(request, obj, form, change)
 
 
+class BillInline(admin.TabularInline):
+
+	model = Bill
+	extra = 1
+	readonly_fields = ()
+
 class SaleAdmin(admin.ModelAdmin):
-	pass
-class BillAdmin(admin.ModelAdmin):
-	pass
+	readonly_fields = ('amount_paid','first_date','last_date','created_by')
+	inlines = [BillInline]
+
+	def save_model(self, request, obj, form, change):
+		obj.created_by = request.user
+		super(SaleAdmin, self).save_model(request, obj, form, change)
+
+
 class PaymentAdmin(admin.ModelAdmin):
 	pass
 
@@ -226,5 +237,4 @@ admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Dsr,DsrAdmin)
 admin.site.register(Sample,SampleAdmin)
 admin.site.register(Sale,SaleAdmin)
-admin.site.register(Bill,BillAdmin)
 admin.site.register(Payment,PaymentAdmin)
