@@ -112,12 +112,12 @@ def rank_register(request):
 		if form.is_valid():
 			rank=form.cleaned_data['rank']
 
-			res = Client.objects.raw('''SELECT  id, client_name, client_category, city , telephone_main, client_rank from data_client where
+			res = Client.objects.raw('''SELECT  client_name, client_category, city , telephone_main, client_rank from data_client where
 										client_rank='{0}' order by client_name
 									'''.format(rank,)
 								)
 			
-			res2 = Client.objects.raw('''SELECT  id, count(id) as count from data_client where
+			res2 = Client.objects.raw('''SELECT  client_name, count(client_name) as count from data_client where
 										client_rank='{0}' order by client_name
 									'''.format(rank,)
 								)
