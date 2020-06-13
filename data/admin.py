@@ -48,7 +48,6 @@ class ProductAdmin(admin.ModelAdmin):
 
 	def save_model(self, request, obj, form, change):
 		# editing form after submission
-		#obj.hsn_code = 3244
 		obj.created_by = request.user
 		super(ProductAdmin, self).save_model(request, obj, form, change)
 

@@ -81,7 +81,7 @@ class Sample(models.Model):
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.product_name
+        return str(self.sent_date)
 
 # only Admin/Accountants
 class Sale(models.Model):
@@ -117,7 +117,7 @@ class Bill(models.Model):
     # created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.product_name
+        return str(self.quantity)
 
 class Payment(models.Model):
     invoice_number  = models.ForeignKey(Sale, on_delete = models.PROTECT)
