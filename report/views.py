@@ -88,3 +88,32 @@ def sample_report(request):
 		payload['form'] = SampleReport()
 	
 	return render(request,'report/report_form.html',payload)
+
+@login_required(login_url='/login/')
+def rank_register(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = RankRegister(request.POST)
+		if form.is_valid():
+			rank=form.cleaned_data['rank']
+
+			res = Client.objects.raw('''SELECT  id, client_name, client_category, city , telephone_main, client_rank from data_client where
+										client_rank='{0}' order by client_name
+									'''.format(rank,)
+								)
+			
+			res2 = Client.objects.raw('''SELECT  id, count(id) as count from data_client where
+										client_rank='{0}' order by client_name
+									'''.format(rank,)
+								)
+
+			payload = {'report':res, 'report2':res2 ,'rank':rank}
+			return render(request,'report/rank_register.html',payload)
+		else:
+			payload['form'] = RankRegister()
+			return render(request,'report/report_form.html',payload)
+	else:
+		payload['form'] = RankRegister()
+	
+	return render(request,'report/report_form.html',payload)

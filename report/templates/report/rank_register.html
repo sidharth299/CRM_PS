@@ -1,0 +1,35 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Rank Register of RANK:{{rank}}</h5>
+
+<table class="table">
+
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">CATEGORY</th>
+        <th scope="col">CITY</th>
+        <th scope="col">PHONE</th>
+        <th scope="col">RANK</th>
+      </tr>
+    </thead>
+  
+    <tbody>
+    {% for r in report %}
+      <tr>
+        <td>{{r.client_name}}</td>
+        <td>{{r.client_category}}</td>
+        <td>{{r.city}}</td>
+        <td>{{r.telephone_main}}</td>
+        <td>{{r.client_rank}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% for r2 in report2 %}
+<h5>COUNT: {{r2.count}}</h5>
+{% endfor  %}
+
+  {% endblock %}

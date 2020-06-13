@@ -28,6 +28,8 @@ class SampleReport(forms.Form):
 								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
 								required = True)
 
+class RankRegister(forms.Form):
+	rank= forms.IntegerField(max_value=7, min_value=1)
 
 
 """
