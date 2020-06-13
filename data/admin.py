@@ -107,7 +107,7 @@ class ClientAdmin(admin.ModelAdmin):
 		super(ClientAdmin, self).save_model(request, obj, form, change)
 
 class DsrAdmin(admin.ModelAdmin):
-	raw_id_fields = ('client_id',)
+	raw_id_fields = ('client_name',)
 	readonly_fields = ('created_by',)
 
 	def save_model(self, request, obj, form, change):
@@ -130,10 +130,10 @@ class SampleAdmin(admin.ModelAdmin):
 		form = super().get_form(request, obj, **kwargs)
 		# do not add anything here which is already in readonly list
 		disable_fields = [
-						'client_id',
+						'client_name',
 						'sent_date',
 						'city',
-						'product_id',
+						'product_name',
 						'sample_quantity',
 						'sample_status',
 						'remarks'

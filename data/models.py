@@ -10,7 +10,7 @@ from .constants import *
 
 # add/changed by only admin
 class Product(models.Model): 
-    product_name     = models.CharField(max_length = MAX_PRODUCT_NAME, unique = True)
+    product_name     = models.CharField(max_length = MAX_PRODUCT_NAME, primary_key=True)
     product_category = models.CharField(choices = CHOICES_PRODUCT_CATEGORY, max_length = MAX_PRODUCT_CATEGORY)
     hsn_code         = models.PositiveIntegerField(null=True)
     basic_rate       = models.PositiveIntegerField()
@@ -24,7 +24,7 @@ class Product(models.Model):
 
 class Client(models.Model):
 
-    client_name      = models.CharField(max_length = MAX_CLIENT_NAME, unique = True)
+    client_name      = models.CharField(max_length = MAX_CLIENT_NAME, primary_key = True)
     gstin            = models.CharField(blank = True, max_length = 15)
     client_category  = models.CharField(choices = CHOICES_CLIENT_CATEGORY, max_length = MAX_CLIENT_CATEGORY)
     btc              = models.CharField(blank = True, choices = CHOICES_BTC, max_length = MAX_BTC)
@@ -51,14 +51,14 @@ class Client(models.Model):
 
 class Dsr(models.Model):
 
-    client_id       = models.ForeignKey(Client, on_delete = models.PROTECT)
+    client_name     = models.ForeignKey(Client, on_delete = models.PROTECT)
     contact_person  = models.CharField(blank = True, max_length = MAX_CONTACT_PERSON)
     telephone       = models.CharField(blank = True, max_length = 15)
     email           = models.EmailField(blank = True)
     contact_mode    = models.CharField(choices = CHOICES_CONTACT_MODE, max_length = MAX_CONTACT_MODE)
     date_of_contact = models.DateField(default = timezone.now)
     action          = models.CharField(max_length = MAX_REMARKS)
-    product_id      = models.ForeignKey(Product, blank = True, null = True,on_delete = models.PROTECT)
+    product_name    = models.ForeignKey(Product, blank = True, null = True,on_delete = models.PROTECT)
     next_call_date  = models.DateField()
     sample_status   = models.CharField(blank = True, choices = CHOICES_SAMPLE_STATUS, max_length = MAX_SAMPLE_STATUS) 
     client_rank     = models.PositiveSmallIntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(7)])
@@ -71,24 +71,24 @@ class Dsr(models.Model):
 
 class Sample(models.Model):
 
-    client_id       = models.ForeignKey(Client, on_delete = models.PROTECT)
+    client_name     = models.ForeignKey(Client, on_delete = models.PROTECT)
     sent_date       = models.DateField(default = timezone.now)
     city            = models.CharField(blank = True, max_length = MAX_CITY)
-    product_id      = models.ForeignKey(Product, blank = True, null = True, on_delete = models.PROTECT)
+    product_name    = models.ForeignKey(Product, blank = True, null = True, on_delete = models.PROTECT)
     sample_quantity = models.PositiveIntegerField()
     sample_status   = models.CharField(choices = CHOICES_SAMPLE_STATUS, max_length = MAX_SAMPLE_STATUS)
     remarks         = models.CharField(blank = True, max_length = MAX_REMARKS)
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.product_id)
+        return self.product_name
 
 # only Admin/Accountants
 class Sale(models.Model):
 
     invoice_number  = models.AutoField(primary_key = True)
     sale_date       = models.DateField(default = timezone.now)
-    client_id       = models.ForeignKey(Client, on_delete = models.PROTECT)
+    client_name     = models.ForeignKey(Client, on_delete = models.PROTECT)
     carting         = models.PositiveIntegerField(default = 0 )
     gstin           = models.CharField(blank = True, max_length = 15)
     tax_type        = models.CharField(choices = CHOICES_TAX_TYPE, max_length = MAX_TAX_TYPE)
@@ -106,7 +106,7 @@ class Sale(models.Model):
 class Bill(models.Model):
     
     invoice_number  = models.ForeignKey(Sale, on_delete = models.PROTECT)
-    product_id      = models.ForeignKey(Product, on_delete = models.PROTECT)
+    product_name    = models.ForeignKey(Product, on_delete = models.PROTECT)
     basic_rate      = models.PositiveIntegerField(blank = True, null = True)
     quantity        = models.PositiveIntegerField()
     igst            = models.DecimalField(decimal_places = 2, max_digits = 20)   
@@ -117,7 +117,7 @@ class Bill(models.Model):
     # created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.product_id)
+        return self.product_name
 
 class Payment(models.Model):
     invoice_number  = models.ForeignKey(Sale, on_delete = models.PROTECT)
