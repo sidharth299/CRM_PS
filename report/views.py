@@ -81,10 +81,10 @@ def sample_report(request):
 			payload = {'report':res,'report2':res2,'username':username}
 			return render(request,'report/sample_report.html',payload)
 		else:
-			payload['form'] = LineChart()
+			payload['form'] = SampleReport()
 			return render(request,'report/report_form.html',payload)
 
 	else:
-		payload['form'] = LineChart()
+		payload['form'] = SampleReport()
 	
 	return render(request,'report/report_form.html',payload)
