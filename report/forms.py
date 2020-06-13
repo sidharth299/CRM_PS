@@ -11,11 +11,10 @@ class LineChart(forms.Form):
 									queryset=User.objects.all().order_by('username'),
 									help_text='select the username')
 	start_date = forms.DateField(
-								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
-								required = True)
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}))
 	end_date   = forms.DateField(
-								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
-								required = True)
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
 
 class SampleReport(forms.Form):
 	username = forms.ModelChoiceField(
@@ -23,15 +22,16 @@ class SampleReport(forms.Form):
 									help_text='select the username')
 	start_date = forms.DateField(
 								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
-								required = True)
+								)
 	end_date   = forms.DateField(
 								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
-								required = True)
+								)
+	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
+
+
 
 class RankRegister(forms.Form):
 	rank= forms.IntegerField(max_value=7, min_value=1)
-
-
 """
 # an example of how to generate forms from model
 class UserForm(ModelForm):
