@@ -80,7 +80,7 @@ def sample_report(request):
 
 			# using RAW SQL in django
 			res = Sample.objects.raw('''SELECT  data_sample.id, sent_date, data_client.client_name as client, data_sample.city, data_product.product_name as product, data_sample.sample_quantity, data_sample.sample_status
-									FROM data_sample join data_product on data_product.id=data_sample.product_id_id join data_client on data_client.id = data_sample.client_id_id
+									FROM data_sample join data_product on data_product.product_name=data_sample.product_name_id join data_client on data_client.client_name = data_sample.client_name_id
 									WHERE data_sample.created_by_id = '{0}' AND (sent_date BETWEEN '{1}' AND '{2}') order by sent_date
 									'''.format(user_id,first_date,last_date)
 								)
