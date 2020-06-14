@@ -1,0 +1,30 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Item wise sales of user: {{username}}</h5>
+<h6>{{firstdate}} to {{lastdate}}</h6>
+
+<table class="table">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">PRODUCT</th>
+      <th scope="col">QUANTITY</th>
+      <th scope="col">AMOUNT</th>
+      
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r in report %}
+    <tr>
+      <td>{{r.p}}</td>
+      <td>{{r.q}}</td>
+      <td>{{r.t}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}
