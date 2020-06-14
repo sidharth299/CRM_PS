@@ -32,6 +32,17 @@ class SampleReport(forms.Form):
 
 class RankRegister(forms.Form):
 	rank= forms.IntegerField(max_value=7, min_value=1)
+
+class IndustrySales(forms.Form):
+	username = forms.ModelChoiceField(
+									queryset=User.objects.all().order_by('username'),
+									help_text='select the username')
+	start_date = forms.DateField(
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+								required = True)
+	end_date   = forms.DateField(
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+								required = True)
 """
 # an example of how to generate forms from model
 class UserForm(ModelForm):

@@ -1,0 +1,52 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Sales report sorted by industry type of user: <a href="#">{{username}}</a></h5>
+
+<table class="table">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">SALE DATE</th>
+      <th scope="col">CLIENT NAME</th>
+      <th scope="col">INDUSTRY TYPE</th>
+      <th scope="col">SUM</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r in report %}
+    <tr>
+      <td>{{r.sale_date}}</td>
+      <td>{{r.client_name}}</td>
+      <td>{{r.client_category}}</td>
+      <td>{{r.total}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h5>Industry Wise Total</h5>
+
+<table class="table">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">INDUSTRY TYPE</th>
+      <th scope="col">TOTAL AMOUNT</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r2 in report2 %}
+    <tr>
+      <td>{{r2.client_category}}</td>
+      <td>{{r2.total}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}
