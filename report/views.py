@@ -131,3 +131,37 @@ def rank_register(request):
 		payload['form'] = RankRegister()
 	
 	return render(request,'report/report_form.html',payload)
+
+
+
+@login_required(login_url='/login/')
+def item_sales(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = ItemSales(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			first_date = form.cleaned_data['start_date']
+			last_date = form.cleaned_data['end_date']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			# using RAW SQL in django
+			res = Sample.objects.raw('''SELECT  data_bill.id, data_bill.product_name_id as p, sum(data_bill.quantity) as q, sum(data_bill.basic_rate*data_bill.quantity) as t
+									FROM data_bill join data_sale on data_sale.invoice_number=data_bill.invoice_number_id
+									WHERE data_sale.created_by_id = '{0}' AND (data_sale.sale_date BETWEEN '{1}' AND '{2}') group by data_bill.product_name_id order by t desc
+									'''.format(user_id,first_date,last_date)
+								)
+
+
+			payload = {'report':res, 'username':username, 'firstdate':first_date, 'lastdate':last_date}
+			return render(request,'report/item_sales.html',payload)
+		else:
+			payload['form'] = ItemSales()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = ItemSales()
+	
+	return render(request,'report/report_form.html',payload)
