@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<ul>
-	<li><a href="{% url 'line_chart' %}">Line Chart</a></li>
-	<li><a href="{% url 'sample_report' %}"> Sample Report</a></li>
-	<li><a href="{% url 'rank_register' %}">Rank Register</a></li>
-	<li><a href="{% url 'item_sales' %}"> Item wise sales</a></li>
+<ul class="list-group">
+	<li class="list-group-item"><a href="{% url 'line_chart' %}">Line Chart</a></li>
+	<li class="list-group-item"><a href="{% url 'sample_report' %}"> Sample Report</a></li>
+	<li class="list-group-item"><a href="{% url 'rank_register' %}">Rank Register</a></li>
+	<li class="list-group-item"><a href="{% url 'item_sales' %}"> Item wise sales</a></li>
 </ul>
     
 {% endblock %}
