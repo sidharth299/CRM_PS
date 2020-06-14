@@ -3,7 +3,6 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-#from .dbconf import *
 from .constants import *
 
 # has to have add some of the null=True only for the time being will fix it when backend will be populating the data instead 
