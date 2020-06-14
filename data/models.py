@@ -97,6 +97,7 @@ class Sale(models.Model):
     first_date      = models.DateField(default = timezone.now)
     last_date       = models.DateField(default = timezone.now)
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    remarks         = models.CharField(blank= True, max_length=10)
     
     def __str__(self):
         return str(self.invoice_number)
