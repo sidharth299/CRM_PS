@@ -29,5 +29,30 @@
   </tbody>
 </table>
 
+<h5>Per client statistics</h5>
+
+<table class="table table-hover">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">CLIENT NAME</th>
+      <th scope="col">AVG OUTSTANDING DAYS</th>
+      <th scope="col">TOTAL REMAINING PAYMENT</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r2 in report2 %}
+    <tr>
+    
+      <td>{{r2.client_name_id}}</td>
+      <td>{{r2.avg}}</td>
+      <td>{{r2.b}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
 
 {% endblock %}
