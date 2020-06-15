@@ -1,0 +1,33 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Outstanding report of : {{username}}</h5>
+<h6>{{firstdate}} to {{lastdate}}</h6>
+
+<table class="table table-hover">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">INVOICE</th>
+      <th scope="col">CLIENT NAME</th>
+      <th scope="col">DATE</th>
+      <th scope="col">OUTSTANDING DAYS</th>
+      <th scope="col">REMAINING PAYMENT</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r in report %}
+    <tr>
+      <td>{{r.id}}</td>
+      <td>{{r.client_name_id}}</td>
+      <td>{{r.sale_date}}</td>
+      <td>{{r.diff}}</td>
+      <td>{{r.b}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

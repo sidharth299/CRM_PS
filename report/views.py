@@ -1,4 +1,5 @@
 import csv
+import datetime
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -204,3 +205,40 @@ def item_sales(request):
 		payload['form'] = ItemSales()
 	
 	return render(request,'report/report_form.html',payload)
+
+@login_required(login_url='/login/')
+def outstanding_report(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = OutstandingReport(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			first_date = form.cleaned_data['start_date']
+			last_date = form.cleaned_data['end_date']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			today = datetime.date.today()
+			
+			cur_date=today.strftime("%Y-%m-%d")
+
+			# using RAW SQL in django
+			
+			res2 = Sample.objects.raw('''SELECT invoice_number as id, client_name_id , sale_date, round(julianday('now')-julianday(sale_date)) as diff ,(total_amount-amount_paid) as b
+									FROM data_sale 
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '{1}' AND '{2}') AND b>0 order by sale_date
+									'''.format(user_id,first_date,last_date, cur_date)
+								)
+
+			payload = {'report':res2, 'username':username, 'firstdate':first_date, 'lastdate':last_date,}
+			return render(request,'report/outstanding_report.html',payload)
+		else:
+			payload['form'] = OutstandingReport()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = OutstandingReport()
+	
+	return render(request,'report/report_form.html',payload)
+
