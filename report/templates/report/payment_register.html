@@ -1,0 +1,60 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Payment Register report of : {{username}}</h5>
+<h6>{{firstdate}} to {{lastdate}}</h6>
+
+<table class="table table-hover">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">INVOICE</th>
+      <th scope="col">CLIENT NAME</th>
+      <th scope="col">SALE DATE</th>
+      <th scope="col">PAYMENT DATE</th>
+      <th scope="col">DAYS TO PAYMENT</th>
+      <th scope="col">PAYMENT RECEIVED</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r in report %}
+    <tr>
+      <td>{{r.invoice_number_id}}</td>
+      <td>{{r.client_name_id}}</td>
+      <td>{{r.sale_date}}</td>
+      <td>{{r.date}}</td>
+      <td>{{r.diff}}</td>
+      <td>{{r.b}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h5>Per client statistics</h5>
+
+<table class="table table-hover">
+
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">CLIENT NAME</th>
+      <th scope="col">AVG DAYS TO PAYMENT</th>
+      <th scope="col">TOTAL PAYMENT RECEIVED</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for r2 in report2 %}
+    <tr>
+    
+      <td>{{r2.client_name_id}}</td>
+      <td>{{r2.avg}}</td>
+      <td>{{r2.b}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}

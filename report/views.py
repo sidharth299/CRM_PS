@@ -249,3 +249,42 @@ def outstanding_report(request):
 	
 	return render(request,'report/report_form.html',payload)
 
+@login_required(login_url='/login/')
+def payment_register(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = PaymentRegister(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			first_date = form.cleaned_data['start_date']
+			last_date = form.cleaned_data['end_date']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			# using RAW SQL in django
+			
+			res2 = Sample.objects.raw('''SELECT data_payment.id, data_payment.invoice_number_id ,data_sale.client_name_id , data_payment.date, data_sale.sale_date , round(julianday(data_payment.date)-julianday(data_sale.sale_date)) as diff , data_payment.amount_received as b
+									FROM data_payment join data_sale on data_sale.invoice_number=data_payment.invoice_number_id
+									WHERE data_payment.created_by_id = '{0}' AND (data_payment.date BETWEEN '{1}' AND '{2}') order by data_payment.date
+									'''.format(user_id,first_date,last_date,)
+								)
+
+			res3 = Sample.objects.raw('''SELECT data_payment.id, data_sale.client_name_id , round(avg(round(julianday(data_payment.date)-julianday(data_sale.sale_date)))) as avg ,sum(data_payment.amount_received) as b
+									FROM data_payment join data_sale on data_sale.invoice_number=data_payment.invoice_number_id
+									WHERE data_payment.created_by_id = '{0}' AND (data_payment.date BETWEEN '{1}' AND '{2}') group by data_sale.client_name_id order by data_sale.client_name_id
+									'''.format(user_id,first_date,last_date, )
+								)
+
+
+			payload = {'report':res2 ,'report2':res3 ,'username':username, 'firstdate':first_date, 'lastdate':last_date,}
+			return render(request,'report/payment_register.html',payload)
+		else:
+			payload['form'] = PaymentRegister()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = PaymentRegister()
+	
+	return render(request,'report/report_form.html',payload)
+
