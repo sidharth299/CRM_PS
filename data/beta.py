@@ -2,6 +2,7 @@
 # from django.http import HttpResponse
 from django.forms import TextInput, Textarea
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 
 from .dbconf import *
 
@@ -15,10 +16,20 @@ class ProductAdmin(admin.ModelAdmin):
 	fieldsets = [
 		(None,			{'fields': ['product_name','product_category','hsn_code']}),
 		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate']}),
-		(None,		{'fields' : ['remarks']})	
+		(None,		{'fields' : ['remarks']})
 		]
 	readonly_fields = ()
-	
+
+	list_display = [
+		'product_name',
+		'product_category',
+		'hsn_code'
+	]
+
+	list_filter = [
+		'product_category',
+	]
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 
@@ -37,7 +48,7 @@ class ProductAdmin(admin.ModelAdmin):
 		form = response
 
 		return form
-	
+
 
 	def save_model(self, request, obj, form, change):
 		# editing form after submission
@@ -61,8 +72,14 @@ class ClientAdmin(admin.ModelAdmin):
 		('Lead Details', {'fields' : ['lead_source','client_rank','remarks']}),
 		]
 	readonly_fields = ('balance','latest_dsr_id')
-	list_display = ('client_name','client_category','zone')
-	
+	list_display = ('client_name','client_category','zone', 'client_rank', 'telephone_main')
+
+	list_filter = [
+		'client_category',
+		'btc',
+		'client_rank',
+		'zone',
+	]
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
@@ -92,7 +109,7 @@ class ClientAdmin(admin.ModelAdmin):
 		form = response
 
 		return form
-	
+
 
 	def save_model(self, request, obj, form, change):
 		obj.created_by = request.user
@@ -106,9 +123,23 @@ class SampleAdmin(admin.ModelAdmin):
         models.CharField: {'widget': TextInput(attrs={'size':'40'})},
         models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
     }
-	
+
+	list_filter = [
+		'sample_status',
+		'product_name',
+		('sent_date', DateFieldListFilter),
+	]
+
+	list_display = [
+		'client_name',
+		'product_name',
+		'sample_status',
+		'sent_date',
+	]
+
+
 	readonly_fields = ('created_by',)
-	
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		# do not add anything here which is already in readonly list
@@ -126,7 +157,7 @@ class SampleAdmin(admin.ModelAdmin):
 		form = response
 
 		return form
-	
+
 
 	def save_model(self, request, obj, form, change):
 		obj.created_by = request.user
