@@ -69,9 +69,9 @@ class ClientAdmin(admin.ModelAdmin):
 		(None,			{'fields': ['client_name','client_category','btc','gstin']}),
 		('Contact', {'fields': ['contact_person','telephone_main','telephone_extra','email']}),
 		('Address',		{'fields' : ['address','city','pin_code','state','country','zone']}),
-		('Lead Details', {'fields' : ['lead_source','client_rank','remarks']}),
+		('Lead Details', {'fields' : ['lead_source','client_rank','remarks','balance']}),
 		]
-	readonly_fields = ('balance','latest_dsr_id')
+	readonly_fields = ('balance',)
 	list_display = ('client_name','client_category','zone', 'client_rank', 'telephone_main')
 
 	list_filter = [
