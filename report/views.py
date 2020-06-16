@@ -227,9 +227,7 @@ def outstanding_report(request):
 
 			user_id = (User.objects.filter(username=username).first()).id
 
-			today = datetime.date.today()
 			
-			cur_date=today.strftime("%Y-%m-%d")
 
 			# using RAW SQL in django
 			
