@@ -40,8 +40,16 @@ def line_chart(request):
 									GROUP BY date_of_contact
 									'''.format(user_id,first_date,last_date)
 								)
+
+			num=0
+			calls=0
+
 			for r in res:
 				r.count = round(r.count/3,2)
+				calls=calls+r.count
+				num=num+1
+
+			calls= round((calls/num),2)
 
 			if is_csv:
 				response = HttpResponse(content_type='text/csv')
@@ -55,7 +63,7 @@ def line_chart(request):
 				return response
 
 
-			payload = {'report':res,'username':username}
+			payload = {'report':res,'username':username, 'average':calls}
 			return render(request,'report/line_chart.html',payload)
 		else:
 			payload['form'] = LineChart()
