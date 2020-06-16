@@ -288,3 +288,35 @@ def payment_register(request):
 	
 	return render(request,'report/report_form.html',payload)
 
+
+@login_required(login_url='/login/')
+def daily_sales(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = DailySales(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			first_date = form.cleaned_data['start_date']
+			last_date = form.cleaned_data['end_date']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			# using RAW SQL in django
+			res = Dsr.objects.raw('''SELECT data_dsr.id, data_dsr.client_name_id, data_dsr.contact_person, data_dsr.telephone, data_dsr.client_rank, data_dsr.contact_mode, data_dsr.date_of_contact, data_dsr.action, data_dsr.product_name_id, data_dsr.next_call_date 
+			            			FROM data_dsr 
+									WHERE data_dsr.created_by_id = '{0}' AND (data_dsr.date_of_contact BETWEEN '{1}' AND '{2}')
+									'''.format(user_id,first_date,last_date)
+								)
+
+			payload = {'report':res, 'username':username, 'firstdate':first_date, 'lastdate':last_date}
+			return render(request,'report/daily_sales.html',payload)
+		else:
+			payload['form'] = DailySales()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = DailySales()
+	
+	return render(request,'report/report_form.html',payload)
+

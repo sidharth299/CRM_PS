@@ -82,6 +82,18 @@ class PaymentRegister(forms.Form):
 								)
 	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
 
+class DailySales(forms.Form):
+	username = forms.ModelChoiceField(
+									queryset=User.objects.all().order_by('username'),
+									help_text='select the username')
+
+	start_date = forms.DateField(
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+								)
+	end_date   = forms.DateField(
+								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
+								)
+	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
 
 
 """

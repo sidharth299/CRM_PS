@@ -1,0 +1,39 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Daily Sales Register of user: <a href="#">{{username}}</a></h5>
+
+<table class="table table-hover">
+
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">CONTACT PERSON</th>
+        <th scope="col">PHONE</th>
+        <th scope="col">RANK</th>
+        <th scope="col">CONTACT MODE</th>
+        <th scope="col">DATE OF CONTACT</th>
+        <th scope="col">ACTION</th>
+        <th scope="col">PRODUCT NAME</th>
+        <th scope="col">NEXT CALL DATE</th>
+      </tr>
+    </thead>
+  
+    <tbody>
+    {% for r in report %}
+      <tr>
+        <td>{{r.client_name_id}}</td>
+        <td>{{r.contact_person}}</td>
+        <td>{{r.telephone}}</td>
+        <td>{{r.client_rank}}</td>
+        <td>{{r.contact_mode}}</td>
+        <td>{{r.date_of_contact}}</td>
+        <td>{{r.action}}</td>
+        <td>{{r.product_name_id}}</td>
+        <td>{{r.next_call_date}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
