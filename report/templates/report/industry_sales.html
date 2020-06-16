@@ -7,9 +7,8 @@
 
   <thead class="thead-dark">
     <tr>
-      
-      <th scope="col">CLIENT NAME</th>
       <th scope="col">INDUSTRY TYPE</th>
+      <th scope="col">CLIENT NAME</th>
       <th scope="col">SUM</th>
     </tr>
   </thead>
@@ -18,8 +17,8 @@
   {% for r in report %}
     <tr>
       
-      <td>{{r.client_name}}</td>
       <td>{{r.client_category}}</td>
+      <td>{{r.client_name}}</td>
       <td>{{r.total}}</td>
     </tr>
   {% endfor %}

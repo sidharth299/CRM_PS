@@ -158,7 +158,7 @@ def industry_sales(request):
 			res = Sale.objects.raw('''SELECT invoice_number,sale_date,client_name_id,client_category, SUM(total_amount) AS total
 									FROM data_sale 
 									JOIN data_client ON data_sale.client_name_id = data_client.client_name
-									WHERE data_sale.created_by_id = '{0}' AND (sale_date BETWEEN '{1}' AND '{2}') GROUP BY client_name ORDER BY client_category
+									WHERE data_sale.created_by_id = '{0}' AND (sale_date BETWEEN '{1}' AND '{2}') GROUP BY client_name ORDER BY client_category, total desc
 									'''.format(user_id,first_date,last_date)
 								)	
 			
