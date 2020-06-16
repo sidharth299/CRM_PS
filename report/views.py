@@ -284,8 +284,13 @@ def payment_register(request):
 									'''.format(user_id,first_date,last_date, )
 								)
 
+			tot=0
 
-			payload = {'report':res2 ,'report2':res3 ,'username':username, 'firstdate':first_date, 'lastdate':last_date,}
+			for r in res3:
+				tot=tot+r.b
+
+
+			payload = {'report':res2 ,'report2':res3 ,'username':username, 'firstdate':first_date, 'lastdate':last_date,'total':tot}
 			return render(request,'report/payment_register.html',payload)
 		else:
 			payload['form'] = PaymentRegister()
