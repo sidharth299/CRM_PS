@@ -2,9 +2,10 @@
 # from django.http import HttpResponse
 from django.contrib import admin
 from .dbconf import *
+from .filters import *
 
 class DsrAdmin(admin.ModelAdmin):
-	#autocomplete_fields = ['client_name']
+	
 	raw_id_fields = ('client_name',)
 	readonly_fields = ('created_by',)
 
@@ -35,8 +36,8 @@ class BillInline(admin.TabularInline):
 
 class SaleAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_name',)
-	readonly_fields = ('amount_paid','first_date','last_date','created_by','sgst','igst','cgst','export_sale','total_amount')
-	
+	readonly_fields = ('invoice_number','amount_paid','first_date','last_date','created_by','sgst','igst','cgst','export_sale','total_amount')
+	list_filter = (AdvanceInvoiceListFilter,)
 	inlines = [BillInline]
 
 	def get_form(self, request, obj=None, **kwargs):
@@ -60,12 +61,16 @@ class SaleAdmin(admin.ModelAdmin):
 				amount+=instance.basic_rate*instance.quantity
 				instance.save()
 			
-			temp = Bill.objects.order_by('-id')[0]
-			invoice_id = temp.invoice_number_id
-
-			product = Product.objects.get(pk=temp.product_name)
-			tax_rate = product.tax_rate
-			export_tax_rate = product.export_tax_rate
+			
+			invoice_id = (Sale.objects.all().last()).invoice_number
+			temp = Bill.objects.filter(invoice_number_id = invoice_id).first()
+			if temp != None:
+				product = Product.objects.get(pk=temp.product_name)
+				tax_rate = product.tax_rate
+				export_tax_rate = product.export_tax_rate
+			else:
+				tax_rate = 0
+				export_tax_rate = 0
 
 			invoice = Sale.objects.get(pk=invoice_id)
 			total_amount = amount + invoice.carting
@@ -128,7 +133,7 @@ class SaleAdmin(admin.ModelAdmin):
 				i = i+1
 
 			"""finishes here"""
-
+			print(invoice_id)
 			temp = Bill.objects.filter(invoice_number_id = invoice_id).first()
 			product = Product.objects.get(pk=temp.product_name)
 			tax_rate = product.tax_rate
@@ -218,10 +223,10 @@ class PaymentAdmin(admin.ModelAdmin):
 			obj.created_by = request.user
 			
 			invoice = obj.invoice_number
-			if invoice.amount_paid == 0:
+			if invoice.amount_paid >= 0:
 				invoice.first_date = obj.date
 			invoice.amount_paid = obj.amount_received
-			if invoice.amount_paid - invoice.total_amount <=0:
+			if invoice.amount_paid - invoice.total_amount >=0 and invoice.total_amount > 0:
 				invoice.last_date = obj.date
 
 			invoice.save()
@@ -239,10 +244,10 @@ class PaymentAdmin(admin.ModelAdmin):
 
 			if old_amount != new_amount:
 				invoice = obj.invoice_number
-				if invoice.amount_paid == 0:
+				if invoice.amount_paid >= 0:
 					invoice.first_date = obj.date
 				invoice.amount_paid = invoice.amount_paid - old_amount + new_amount
-				if invoice.amount_paid - invoice.total_amount <= 0:
+				if invoice.amount_paid - invoice.total_amount >= 0 and invoice.total_amount > 0 :
 					invoice.last_date = obj.date
 
 				invoice.save()
@@ -260,10 +265,10 @@ class PaymentAdmin(admin.ModelAdmin):
 		old_amount = payment.amount_received
 
 		invoice = obj.invoice_number
-		if invoice.amount_paid == 0:
+		if invoice.amount_paid >= 0:
 			invoice.first_date = obj.date
 		invoice.amount_paid = invoice.amount_paid - old_amount
-		if invoice.amount_paid - invoice.total_amount <=0:
+		if invoice.amount_paid - invoice.total_amount >=0 and invoice.total_amount > 0:
 			invoice.last_date = obj.date
 
 		invoice.save()

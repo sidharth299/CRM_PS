@@ -7,9 +7,9 @@ class ProductAdmin(admin.ModelAdmin):
 	# formfield_overrides = FORMFIELD_OVERRIDES
 	fieldsets = [
 		(None,			{'fields': ['product_name','product_category','hsn_code']}),
-		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate']}),
-		(None,		{'fields' : ['remarks']})
+		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate','remarks']}),
 		]
+
 	search_fields = ('product_name',)
 
 	list_display = [
@@ -37,12 +37,13 @@ class ProductAdmin(admin.ModelAdmin):
 class ClientAdmin(admin.ModelAdmin):
 	
 	fieldsets = [
-		(None,			{'fields': ['client_name','client_category','btc','gstin']}),
+		(None,			{'fields': ['client_name','client_category','btc','gstin','balance']}),
 		('Contact', {'fields': ['contact_person','telephone_main','telephone_extra','email']}),
 		('Address',		{'fields' : ['address','city','pin_code','state','country','zone']}),
-		('Lead Details', {'fields' : ['lead_source','client_rank','remarks','balance']}),
+		('Lead Details', {'fields' : ['lead_source','client_rank','remarks']}),
 		]
 	readonly_fields = ('balance',)
+	
 	list_display = ('client_name','client_category','zone', 'client_rank', 'telephone_main')
 
 	list_filter = [
@@ -66,7 +67,10 @@ class ClientAdmin(admin.ModelAdmin):
 
 
 class SampleAdmin(admin.ModelAdmin):
-
+	fieldsets = [
+		('Client Details', {'fields': ['client_name','city']}),
+		('Sample Details', {'fields': ['sent_date','product_name','sample_quantity','sample_status','remarks']}),
+		]
 	list_filter = [
 		'sample_status',
 		'product_name',

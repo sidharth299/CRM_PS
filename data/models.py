@@ -2,11 +2,43 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
+from datetime import datetime
 
 from .constants import *
 
 # has to have add some of the null=True only for the time being will fix it when backend will be populating the data instead
 # remove null from all places WHERE NOT required
+
+def get_financial_year():
+    temp = datetime.now()
+    month = temp.month
+    if month in [1,2,3]:
+        year = temp.year-1
+    else:
+        year = temp.year
+    next_year = str(year+1)
+    res = str(year)+'-'+next_year[-2:]
+    return res
+
+def get_invoice_number():
+    invoice = Sale.objects.all().last()
+    reset = False
+    financial_year = get_financial_year()
+    if invoice == None:
+        reset = True
+    else:
+        temp = (invoice.invoice_number).split('~')
+        year = temp[1]
+        if year == financial_year:
+            res = int(temp[0])+1
+        else:
+            reset = True
+    if reset:
+        res = 1
+
+    response = str(res)+'~'+financial_year
+
+    return response
 
 # add/changed by only admin
 class Product(models.Model):
@@ -85,7 +117,8 @@ class Sample(models.Model):
 # only Admin/Accountants
 class Sale(models.Model):
 
-    invoice_number  = models.AutoField(primary_key = True, verbose_name = "Invoice Number")
+    #invoice_number  = models.AutoField(primary_key = True, verbose_name = "Invoice Number")
+    invoice_number  = models.CharField(default = get_invoice_number, max_length = MAX_INVOICE_NUMBER , primary_key = True, verbose_name = "Invoice Number")
     sale_date       = models.DateField(default = timezone.now, verbose_name = "Sale Date")
     client_name     = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
     carting         = models.PositiveIntegerField(default = 0, verbose_name = "Carting")
@@ -103,12 +136,12 @@ class Sale(models.Model):
     remarks         = models.CharField(blank= True, max_length=10, verbose_name = "Remarks")
 
     def __str__(self):
-        return 'Invoice No. ' + str(self.invoice_number)
+        return str(self.client_name)+': Invoice No.'+str(self.invoice_number)
 
 # not to be displayed to anyone
 class Bill(models.Model):
 
-    invoice_number  = models.ForeignKey(Sale, on_delete = models.CASCADE, verbose_name = "Incoice Number")
+    invoice_number  = models.ForeignKey(Sale, on_delete = models.CASCADE, verbose_name = "Invoice Number")
     product_name    = models.ForeignKey(Product, on_delete = models.PROTECT, verbose_name = "Product Name")
     # REMOVE null from basic rate
     basic_rate      = models.PositiveIntegerField(blank = True, null = True, verbose_name = "Basic Cost")
