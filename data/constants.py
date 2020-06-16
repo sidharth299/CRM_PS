@@ -1,3 +1,15 @@
+## max values for NEW last two models ##
+MAX_PERIOD = 10
+MAX_ENTRY_TYPE = 18
+
+CHOICES_ENTRY_TYPE = (
+	("dealer_appointment","Dealer Appointment"),
+	("a_letter","Appreciation Letter"),
+	("converted","Converted"),
+	("repeat","Repeat"),
+	("big","Big Ticket Customer"),
+)
+
 ###    defutl values   #####  
 
 DEFAULT_STATE = 'Maharashtra'

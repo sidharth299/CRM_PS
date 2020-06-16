@@ -162,3 +162,10 @@ class SampleAdmin(admin.ModelAdmin):
 	def save_model(self, request, obj, form, change):
 		obj.created_by = request.user
 		super(SampleAdmin, self).save_model(request, obj, form, change)
+
+
+class TargetAdmin(admin.ModelAdmin):
+	pass
+
+class EntryAdmin(admin.ModelAdmin):
+	pass
