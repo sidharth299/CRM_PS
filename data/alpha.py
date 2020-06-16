@@ -1,15 +1,19 @@
 # import csv
 # from django.http import HttpResponse
-from django.forms import TextInput, Textarea
 from django.contrib import admin
 from .dbconf import *
-from django.db.models import Sum
-
 
 class DsrAdmin(admin.ModelAdmin):
 	#autocomplete_fields = ['client_name']
 	raw_id_fields = ('client_name',)
 	readonly_fields = ('created_by',)
+
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		dfields = []
+		name = 'dsr'
+		form = customized_form(request,form,name, dfields)
+		return form
 
 	def save_model(self, request, obj, form, change):
 		if not change:
@@ -21,37 +25,31 @@ class DsrAdmin(admin.ModelAdmin):
 				obj.telephone = client.telephone_main
 			if obj.email == '':
 				obj.email = client.email
-		# print((self.model.objects.get(id=obj.id)).contact_person)
+		
 		super(DsrAdmin, self).save_model(request, obj, form, change)
 
 class BillInline(admin.TabularInline):
 
 	model = Bill
 	extra = 1
-	#readonly_fields = ('')
 
 class SaleAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_name',)
 	readonly_fields = ('amount_paid','first_date','last_date','created_by','sgst','igst','cgst','export_sale','total_amount')
+	
 	inlines = [BillInline]
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
-		# do not add anything here which is already in readonly list
-		disable_fields = [
-					'client_name'
-						]
-		response = valid_action(request, form, disable_fields)
-
-		form = response
-
+		dfields = ['client_name']
+		name = 'sale'
+		form = customized_form(request,form,name, dfields)
 		return form
 	
 	def save_formset(self, request, form, formset, change):
 		
 		instances = formset.save(commit=False)
-		request_dict = request.POST
-		print(request_dict)
+		request_dict = dict(request.POST)
 		# that is some new record
 		if not change:
 			amount = 0
@@ -101,6 +99,7 @@ class SaleAdmin(admin.ModelAdmin):
 		# for change
 		if change:
 			for instance in instances:
+				print('hello')
 				product = Product.objects.get(pk=instance.product_name)
 				if instance.basic_rate == None:
 					instance.basic_rate = product.basic_rate
@@ -108,11 +107,27 @@ class SaleAdmin(admin.ModelAdmin):
 			
 			keyword = request.path.split('/')
 			invoice_id = keyword[3]
-			# amount = Bill.objects.filter(invoice_number_id = invoice_id).aggregate(Sum(F('basic_rate')*F('quantity')))
 			products= Bill.objects.filter(invoice_number_id = invoice_id)
 			amount = 0
 			for product in products:
 				amount = amount + (product.quantity*product.basic_rate)
+			""" here writing a function to delete any sub elements-products okay """
+			
+			i = 1
+			while True:
+
+				if not ('bill_set-'+str(i)+'-id' in request_dict):
+					break
+				if 'bill_set-'+str(i)+'-DELETE' in request_dict:
+					print(request_dict['bill_set-'+str(i)+'-DELETE'])
+					if request_dict['bill_set-'+str(i)+'-DELETE'] == ['on']:
+
+						amount = amount - int(request_dict['bill_set-'+str(i)+'-quantity'][0])*int(request_dict['bill_set-'+str(i)+'-basic_rate'][0])
+						bill = Bill.objects.get(pk = int(request_dict['bill_set-'+str(i)+'-id'][0]))
+						bill.delete()
+				i = i+1
+
+			"""finishes here"""
 
 			temp = Bill.objects.filter(invoice_number_id = invoice_id).first()
 			product = Product.objects.get(pk=temp.product_name)
@@ -121,7 +136,6 @@ class SaleAdmin(admin.ModelAdmin):
 
 			invoice = Sale.objects.get(pk=invoice_id)
 			total_amount = amount + invoice.carting
-			print(total_amount)
 			basic_tax = (total_amount*tax_rate)/100
 			export_tax = (total_amount*export_tax_rate)/100
 			tax_type = invoice.tax_type
@@ -171,7 +185,7 @@ class SaleAdmin(admin.ModelAdmin):
 			obj.sgst = 0
 			obj.export_sale = 0
 			obj.total_amount = 0
-
+		# updating
 		if change:
 			pass
 
@@ -192,13 +206,9 @@ class PaymentAdmin(admin.ModelAdmin):
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
-		# do not add anything here which is already in readonly list
-		disable_fields = [
-					'invoice_number',
-					'amount_received'
-						]
-		response = valid_action(request, form, disable_fields)
-		form = response
+		dfields = ['invoice_number']
+		name = 'payment'
+		form = customized_form(request,form,name, dfields)
 		return form
 	
 	def save_model(self, request, obj, form, change):

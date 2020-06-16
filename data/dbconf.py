@@ -5,11 +5,21 @@ from django.contrib.contenttypes.models import ContentType
 
 # displaying messages in forms
 from django.contrib import messages
+from django.apps import apps
+from django.forms import TextInput, Textarea
 
 from .models import *
 
+FORMFIELD_OVERRIDES = {
+	models.DecimalField: {'widget': TextInput(attrs={'size':'20'})},
+	models.IntegerField: {'widget': TextInput(attrs={'size':'20'})},
+    models.CharField: {'widget': TextInput(attrs={'size':'40'})},
+    models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
+}
+
 def valid_action(request, form, disable_fields):
 	response = form
+	message_dict = request._messages.__dict__
 
 	keyword = request.path.split('/')
 	"""
@@ -26,19 +36,35 @@ def valid_action(request, form, disable_fields):
 		# first check if the user is the creator of the object or not
 		if res.user_id != user_id or (timezone.now()-res.action_time).days > 0:
 			for i in disable_fields:
-				form.base_fields[i].disabled = True
+				if i in form.base_fields:
+					form.base_fields[i].disabled = True
 			response = form
 		error_message = False
-		if res.user_id != user_id:
+		if res.user_id != user_id and not message_dict['added_new']:
 			error_message = 'This record was not created by you. If you want to update it, please contact the admininstrator'
-		elif (timezone.now()-res.action_time).days > 0:
+		elif (timezone.now()-res.action_time).days > 0 and not message_dict['added_new']:
 			error_message = 'This record was created 24 hours ago. If you want to update it, please contact the admininstrator'
 		else:
 			pass
+		
 		if error_message:
 			messages.add_message(request, messages.INFO, error_message)
 
 	return response
+
+def customized_form(request, form, name, dfields):
+	keyword = request.path.split('/')
+	action = keyword[4]
+	if action == 'change':
+		for i in dfields:
+			form.base_fields[i].disabled = True
+	
+	if request.user.has_perm('data.change_'+name):
+		model = apps.get_model('data', name)
+		disable_fields = [field.name for field in model._meta.get_fields()]
+		form = valid_action(request, form, disable_fields)
+
+	return form
 
 
 	

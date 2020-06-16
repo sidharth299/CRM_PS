@@ -80,7 +80,7 @@ class Sample(models.Model):
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By")
 
     def __str__(self):
-        return str(self.sent_date)
+        return self.sample_status
 
 # only Admin/Accountants
 class Sale(models.Model):
@@ -103,7 +103,7 @@ class Sale(models.Model):
     remarks         = models.CharField(blank= True, max_length=10, verbose_name = "Remarks")
 
     def __str__(self):
-        return str(self.invoice_number)
+        return 'Invoice No. ' + str(self.invoice_number)
 
 # not to be displayed to anyone
 class Bill(models.Model):
@@ -115,7 +115,7 @@ class Bill(models.Model):
     quantity        = models.PositiveIntegerField(verbose_name = "Quantity Supplied")
 
     def __str__(self):
-        return str(self.quantity)
+        return str(self.product_name)+' : '+str(self.quantity)
 
 class Payment(models.Model):
     invoice_number  = models.ForeignKey(Sale, on_delete = models.CASCADE, verbose_name = "Invoice Number")
@@ -124,7 +124,42 @@ class Payment(models.Model):
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By")
 
     def __str__(self):
-        return str (self.amount_received)
+        return str(self.invoice_number) + ' : Rs.' + str(self.amount_received)
+
+"""
+adding two new models
+"""
+class Target(models.Model):
+    user_id           = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
+    period            = models.CharField(max_length = MAX_PERIOD)
+    big               = models.IntegerField(default = 0)
+    other             = models.IntegerField(default = 0)
+    sale_value        = models.DecimalField(default=0, decimal_places = 2, max_digits = 10)
+    lead_gen          = models.DecimalField(default=0, decimal_places = 2, max_digits = 10)
+    mnoc              = models.DecimalField(default=0, decimal_places = 2, max_digits = 5)
+    cross_sale        = models.IntegerField(default = 0)
+    ref_sale          = models.IntegerField(default = 0)
+    up_sale           = models.IntegerField(default = 0)
+    lost_sale         = models.IntegerField(default = 0)
+    rank_6_7          = models.IntegerField(default = 0)
+    d_appointment     = models.IntegerField(default = 0)
+    appr_letter       = models.IntegerField(default = 0)
+    hit_ratio         = models.IntegerField(default = 0)
+    ats               = models.DecimalField(default=0, decimal_places = 2, max_digits = 10)
+    MTD_sales         = models.DecimalField(default=0, decimal_places = 2, max_digits = 10)
+    total_outstanding = models.DecimalField(default=0, decimal_places = 2, max_digits = 10)
+    MTD_collection    = models.DecimalField(default=0, decimal_places = 2, max_digits = 10)
+
+    def __str__(self):
+        return str(self.user_id)
+
+class Entry(models.Model):
+    user_id       = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
+    entry_type  = models.CharField(choices = CHOICES_ENTRY_TYPE, max_length = MAX_ENTRY_TYPE)
+    entry_date    = models.DateField(default = timezone.now)
+
+    def __str__(self):
+        return str(self.entry_type)
 
 """
     def publish(self):
