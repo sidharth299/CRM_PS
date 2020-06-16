@@ -62,7 +62,6 @@ def customized_form(request, form, name, dfields):
 	
 	if request.user.has_perm('data.change_'+name):
 		model = apps.get_model('data', name)
-		print(model)
 		disable_fields = [field.name for field in model._meta.get_fields()]
 		form = valid_action(request, form, disable_fields)
 

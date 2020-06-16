@@ -104,7 +104,6 @@ class SaleAdmin(admin.ModelAdmin):
 		# for change
 		if change:
 			for instance in instances:
-				print('hello')
 				product = Product.objects.get(pk=instance.product_name)
 				if instance.basic_rate == None:
 					instance.basic_rate = product.basic_rate
@@ -124,7 +123,6 @@ class SaleAdmin(admin.ModelAdmin):
 				if not ('bill_set-'+str(i)+'-id' in request_dict):
 					break
 				if 'bill_set-'+str(i)+'-DELETE' in request_dict:
-					print(request_dict['bill_set-'+str(i)+'-DELETE'])
 					if request_dict['bill_set-'+str(i)+'-DELETE'] == ['on']:
 
 						amount = amount - int(request_dict['bill_set-'+str(i)+'-quantity'][0])*int(request_dict['bill_set-'+str(i)+'-basic_rate'][0])
@@ -133,7 +131,6 @@ class SaleAdmin(admin.ModelAdmin):
 				i = i+1
 
 			"""finishes here"""
-			print(invoice_id)
 			temp = Bill.objects.filter(invoice_number_id = invoice_id).first()
 			product = Product.objects.get(pk=temp.product_name)
 			tax_rate = product.tax_rate
