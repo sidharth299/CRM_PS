@@ -1,15 +1,19 @@
 # import csv
 # from django.http import HttpResponse
-from django.forms import TextInput, Textarea
 from django.contrib import admin
 from .dbconf import *
-from django.db.models import Sum
-
 
 class DsrAdmin(admin.ModelAdmin):
 	#autocomplete_fields = ['client_name']
 	raw_id_fields = ('client_name',)
 	readonly_fields = ('created_by',)
+
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		dfields = []
+		name = 'dsr'
+		form = customized_form(request,form,name, dfields)
+		return form
 
 	def save_model(self, request, obj, form, change):
 		if not change:
@@ -37,14 +41,9 @@ class SaleAdmin(admin.ModelAdmin):
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
-		# do not add anything here which is already in readonly list
-		disable_fields = [
-					'client_name'
-						]
-		response = valid_action(request, form, disable_fields)
-
-		form = response
-
+		dfields = ['client_name']
+		name = 'sale'
+		form = customized_form(request,form,name, dfields)
 		return form
 	
 	def save_formset(self, request, form, formset, change):
@@ -108,7 +107,6 @@ class SaleAdmin(admin.ModelAdmin):
 			
 			keyword = request.path.split('/')
 			invoice_id = keyword[3]
-			# amount = Bill.objects.filter(invoice_number_id = invoice_id).aggregate(Sum(F('basic_rate')*F('quantity')))
 			products= Bill.objects.filter(invoice_number_id = invoice_id)
 			amount = 0
 			for product in products:
@@ -208,13 +206,9 @@ class PaymentAdmin(admin.ModelAdmin):
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
-		# do not add anything here which is already in readonly list
-		disable_fields = [
-					'invoice_number',
-					'amount_received'
-						]
-		response = valid_action(request, form, disable_fields)
-		form = response
+		dfields = ['invoice_number']
+		name = 'payment'
+		form = customized_form(request,form,name, dfields)
 		return form
 	
 	def save_model(self, request, obj, form, change):

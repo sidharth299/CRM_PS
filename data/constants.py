@@ -1,4 +1,5 @@
 ## max values for NEW last two models ##
+
 MAX_PERIOD = 10
 MAX_ENTRY_TYPE = 18
 
