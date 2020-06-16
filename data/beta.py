@@ -4,13 +4,13 @@ from django.contrib.admin import DateFieldListFilter
 from .dbconf import *
 
 class ProductAdmin(admin.ModelAdmin):
-	formfield_overrides = FORMFIELD_OVERRIDES
+	# formfield_overrides = FORMFIELD_OVERRIDES
 	fieldsets = [
 		(None,			{'fields': ['product_name','product_category','hsn_code']}),
 		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate']}),
 		(None,		{'fields' : ['remarks']})
 		]
-	readonly_fields = ()
+	search_fields = ('product_name',)
 
 	list_display = [
 		'product_name',
@@ -30,12 +30,11 @@ class ProductAdmin(admin.ModelAdmin):
 		return form
 
 	def save_model(self, request, obj, form, change):
-		# editing form after submission
-		obj.created_by = request.user
+		if not change:
+			obj.created_by = request.user
 		super(ProductAdmin, self).save_model(request, obj, form, change)
 
 class ClientAdmin(admin.ModelAdmin):
-	# formfield_overrides = FORMFIELD_OVERRIDES
 	
 	fieldsets = [
 		(None,			{'fields': ['client_name','client_category','btc','gstin']}),
@@ -61,12 +60,12 @@ class ClientAdmin(admin.ModelAdmin):
 		return form
 
 	def save_model(self, request, obj, form, change):
-		obj.created_by = request.user
+		if not change:
+			obj.created_by = request.user
 		super(ClientAdmin, self).save_model(request, obj, form, change)
 
 
 class SampleAdmin(admin.ModelAdmin):
-	# formfield_overrides = FORMFIELD_OVERRIDES
 
 	list_filter = [
 		'sample_status',
@@ -91,11 +90,17 @@ class SampleAdmin(admin.ModelAdmin):
 		return form
 
 	def save_model(self, request, obj, form, change):
-		obj.created_by = request.user
+		if not change:
+			obj.created_by = request.user
+			client = obj.client_name
+			if obj.city == '':
+				obj.city = client.city
+
 		super(SampleAdmin, self).save_model(request, obj, form, change)
 
 
 class TargetAdmin(admin.ModelAdmin):
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
@@ -105,6 +110,7 @@ class TargetAdmin(admin.ModelAdmin):
 	
 
 class EntryAdmin(admin.ModelAdmin):
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []

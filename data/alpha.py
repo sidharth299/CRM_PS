@@ -32,11 +32,11 @@ class BillInline(admin.TabularInline):
 
 	model = Bill
 	extra = 1
-	#readonly_fields = ('')
 
 class SaleAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_name',)
 	readonly_fields = ('amount_paid','first_date','last_date','created_by','sgst','igst','cgst','export_sale','total_amount')
+	
 	inlines = [BillInline]
 
 	def get_form(self, request, obj=None, **kwargs):
@@ -185,7 +185,7 @@ class SaleAdmin(admin.ModelAdmin):
 			obj.sgst = 0
 			obj.export_sale = 0
 			obj.total_amount = 0
-
+		# updating
 		if change:
 			pass
 
