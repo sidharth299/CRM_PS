@@ -1,13 +1,18 @@
 # import csv
 # from django.http import HttpResponse
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 from .dbconf import *
 from .filters import *
 
 class DsrAdmin(admin.ModelAdmin):
-	
+
 	raw_id_fields = ('client_name','product_name')
 	readonly_fields = ('created_by',)
+
+	list_display = ['client_name', 'date_of_contact', 'action', 'next_call_date']
+
+	list_filter = ['contact_mode', 'client_rank', 'sample_status', ]
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
@@ -26,7 +31,7 @@ class DsrAdmin(admin.ModelAdmin):
 				obj.telephone = client.telephone_main
 			if obj.email == '':
 				obj.email = client.email
-		
+
 		super(DsrAdmin, self).save_model(request, obj, form, change)
 
 class BillInline(admin.TabularInline):
@@ -37,8 +42,11 @@ class BillInline(admin.TabularInline):
 class SaleAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_name',)
 	readonly_fields = ('invoice_number','amount_paid','first_date','last_date','created_by','sgst','igst','cgst','export_sale','total_amount')
-	list_filter = (AdvanceInvoiceListFilter,)
+
+	list_filter = (AdvanceInvoiceListFilter, 'tax_type', ('sale_date', DateFieldListFilter))
 	inlines = [BillInline]
+
+	list_display = ['invoice_number', 'client_name', 'total_amount', 'sale_date']
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
@@ -46,9 +54,9 @@ class SaleAdmin(admin.ModelAdmin):
 		name = 'sale'
 		form = customized_form(request,form,name, dfields)
 		return form
-	
+
 	def save_formset(self, request, form, formset, change):
-		
+
 		instances = formset.save(commit=False)
 		request_dict = dict(request.POST)
 		# that is some new record
@@ -60,8 +68,8 @@ class SaleAdmin(admin.ModelAdmin):
 					instance.basic_rate = product.basic_rate
 				amount+=instance.basic_rate*instance.quantity
 				instance.save()
-			
-			
+
+
 			invoice_id = (Sale.objects.all().last()).invoice_number
 			temp = Bill.objects.filter(invoice_number_id = invoice_id).first()
 			if temp != None:
@@ -96,11 +104,11 @@ class SaleAdmin(admin.ModelAdmin):
 					invoice.export_sale = round(export_tax,2)
 			invoice.total_amount = round(total_amount + invoice.cgst + invoice.igst + invoice.sgst - invoice.export_sale)
 			invoice.save()
-			
+
 			client = Client.objects.get(pk = invoice.client_name)
 			client.balance = client.balance + invoice.total_amount
 			client.save()
-		
+
 		# for change
 		if change:
 			for instance in instances:
@@ -108,7 +116,7 @@ class SaleAdmin(admin.ModelAdmin):
 				if instance.basic_rate == None:
 					instance.basic_rate = product.basic_rate
 				instance.save()
-			
+
 			keyword = request.path.split('/')
 			invoice_id = keyword[3]
 			products= Bill.objects.filter(invoice_number_id = invoice_id)
@@ -116,7 +124,7 @@ class SaleAdmin(admin.ModelAdmin):
 			for product in products:
 				amount = amount + (product.quantity*product.basic_rate)
 			""" here writing a function to delete any sub elements-products okay """
-			
+
 			i = 1
 			while True:
 
@@ -176,10 +184,10 @@ class SaleAdmin(admin.ModelAdmin):
 			client.save()
 
 		formset.save_m2m()
-	
+
 	def save_model(self, request, obj, form, change):
-		
-		# means adding a new record not updating		
+
+		# means adding a new record not updating
 		if not change:
 			obj.created_by = request.user
 			obj.igst = 0
@@ -206,19 +214,21 @@ class PaymentAdmin(admin.ModelAdmin):
 	raw_id_fields = ('invoice_number',)
 	readonly_fields = ('created_by',)
 
+	list_display = ['invoice_number', 'amount_received', 'date']
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = ['invoice_number']
 		name = 'payment'
 		form = customized_form(request,form,name, dfields)
 		return form
-	
+
 	def save_model(self, request, obj, form, change):
-		
-		# means adding a new record not updating		
+
+		# means adding a new record not updating
 		if not change:
 			obj.created_by = request.user
-			
+
 			invoice = obj.invoice_number
 			if invoice.amount_paid >= 0:
 				invoice.first_date = obj.date
@@ -231,7 +241,7 @@ class PaymentAdmin(admin.ModelAdmin):
 			client = Client.objects.get(pk = invoice.client_name)
 			client.balance = client.balance - obj.amount_received
 			client.save()
-			
+
 		if change:
 			keyword = request.path.split('/')
 			payment_id = keyword[3]
@@ -254,7 +264,7 @@ class PaymentAdmin(admin.ModelAdmin):
 				client.save()
 
 		super(PaymentAdmin, self).save_model(request, obj, form, change)
-	
+
 	def delete_model(self, request, obj):
 		keyword = request.path.split('/')
 		payment_id = keyword[3]

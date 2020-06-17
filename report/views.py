@@ -331,3 +331,126 @@ def daily_sales(request):
 	
 	return render(request,'report/report_form.html',payload)
 
+
+@login_required(login_url='/login/')
+def perf_report(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = PerfReport(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			first_date = form.cleaned_data['start_date']
+			last_date = form.cleaned_data['end_date']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			res = Dsr.objects.raw('''SELECT  id,date_of_contact,
+									SUM(CASE WHEN contact_mode = 'Visit' THEN 3
+											WHEN contact_mode in ('Telephone','Email','WhatsApp') THEN 1
+											ELSE 0 END) 
+									AS count 
+									FROM data_dsr
+									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '{1}' AND '{2}')
+									GROUP BY date_of_contact
+									'''.format(user_id,first_date,last_date)
+								)
+
+			calls=0
+			num=0
+			for r in res:
+				r.count = round(r.count/3,2)
+				calls=calls+r.count
+				num=num+1
+
+			calls=round(calls,2)
+			avg_calls=round((calls/num),2)
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='dealer_appointment'
+									'''.format(user_id,first_date,last_date)
+								)
+			d_app=0
+
+			for r in res:
+				d_app=r.c
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='a_letter'
+									'''.format(user_id,first_date,last_date)
+								)
+
+			a_letter=0
+
+			for r in res:
+				a_letter=r.c
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='big'
+									'''.format(user_id,first_date,last_date)
+								)
+
+			big=0
+
+			for r in res:
+				big=r.c
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='converted'
+									'''.format(user_id,first_date,last_date)
+								)
+
+			conv=0
+
+			for r in res:
+				conv=r.c
+
+			hit_ratio=round((calls/conv),2)
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='repeat'
+									'''.format(user_id,first_date,last_date)
+								)
+
+			repeat=0
+
+			for r in res:
+				repeat=r.c
+
+			res = Sample.objects.raw('''SELECT data_payment.id, data_sale.client_name_id , round(avg(round(julianday(data_payment.date)-julianday(data_sale.sale_date)))) as avg ,sum(data_payment.amount_received) as b
+									FROM data_payment join data_sale on data_sale.invoice_number=data_payment.invoice_number_id
+									WHERE data_payment.created_by_id = '{0}' AND (data_payment.date BETWEEN '{1}' AND '{2}') group by data_sale.client_name_id order by data_sale.client_name_id
+									'''.format(user_id,first_date,last_date, )
+								)
+
+			p_tot=0
+
+			for r in res:
+				p_tot=p_tot+r.b
+
+			res = Sample.objects.raw('''SELECT invoice_number as id, client_name_id , sale_date, round(julianday('now')-julianday(sale_date)) as diff , sum(total_amount) as b
+									FROM data_sale 
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '{1}' AND '{2}')
+									'''.format(user_id,first_date,last_date,)
+								)
+	
+			s_tot=0
+
+			for r in res:
+				s_tot=s_tot+r.b
+
+			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls,'avg_calls':avg_calls ,'d_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot}
+			return render(request,'report/perf_report.html',payload)
+		else:
+			payload['form'] = PerfReport()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = PerfReport()
+	
+	return render(request,'report/report_form.html',payload)

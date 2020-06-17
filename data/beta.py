@@ -11,16 +11,16 @@ class ProductAdmin(admin.ModelAdmin):
 		]
 	readonly_fields = ('created_by',)
 	search_fields = ('product_name',)
-	
+
 	list_display = [
 		'product_name',
 		'product_category',
 		'hsn_code'
 	]
 
-	list_filter = [
-		'product_category',
-	]
+	list_filter = [	'product_category',]
+
+	search_fields = ('product_name',)
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
@@ -35,7 +35,7 @@ class ProductAdmin(admin.ModelAdmin):
 		super(ProductAdmin, self).save_model(request, obj, form, change)
 
 class ClientAdmin(admin.ModelAdmin):
-	
+
 	fieldsets = [
 		(None,			{'fields': ['client_name','client_category','btc','gstin','balance']}),
 		('Contact', {'fields': ['contact_person','telephone_main','telephone_extra','email']}),
@@ -43,6 +43,7 @@ class ClientAdmin(admin.ModelAdmin):
 		('Lead Details', {'fields' : ['lead_source','client_rank','remarks','created_by']}),
 		]
 	readonly_fields = ('balance','created_by')
+
 	search_fields = ('client_name',)
 
 	list_display = ('client_name','client_category','zone', 'client_rank', 'telephone_main')
@@ -72,7 +73,7 @@ class SampleAdmin(admin.ModelAdmin):
 		('Client Details', {'fields': ['client_name','city']}),
 		('Sample Details', {'fields': ['sent_date','product_name','sample_quantity','sample_status','remarks','created_by']}),
 		]
-	
+
 	readonly_fields = ('created_by',)
 	raw_id_fields = ('client_name','product_name')
 
@@ -114,7 +115,12 @@ class TargetAdmin(admin.ModelAdmin):
 		name = 'target'
 		form = customized_form(request,form,name, dfields)
 		return form
-	
+
+	list_display = [
+		'user_id',
+		'period',
+	]
+
 
 class EntryAdmin(admin.ModelAdmin):
 
@@ -124,3 +130,13 @@ class EntryAdmin(admin.ModelAdmin):
 		name = 'entry'
 		form = customized_form(request,form,name, dfields)
 		return form
+
+	list_display = [
+		'user_id',
+		'entry_type',
+		'entry_date'
+	]
+	
+	search_fields = ('user_id',)
+
+	list_filter = ['entry_type', ('entry_date',DateFieldListFilter)]
