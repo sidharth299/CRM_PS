@@ -46,7 +46,7 @@ class SaleAdmin(admin.ModelAdmin):
 	list_filter = (AdvanceInvoiceListFilter, 'tax_type', ('sale_date', DateFieldListFilter))
 	inlines = [BillInline]
 
-	list_display = ['invoice_number', 'client_name', 'sale_date', 'total_amount']
+	list_display = ['invoice_number', 'client_name', 'total_amount', 'sale_date']
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
