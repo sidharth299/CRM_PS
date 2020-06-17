@@ -12,6 +12,13 @@ class DsrAdmin(admin.ModelAdmin):
 
 	list_filter = ['contact_mode', 'client_rank', 'sample_status', ]
 
+	fieldsets = [
+		(None, {'fields': ['client_name', 'product_name', 'date_of_contact']}),
+		('Contact Person Details', {'fields': ['contact_person', 'telephone', 'email', 'contact_mode']}),
+		('Action Taken', {'fields': ['action', 'next_call_date', 'sample_status', 'client_rank', 'failed_sale', 'successful_sale']}),
+		(None, {'fields': ['created_by']})
+	]
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []

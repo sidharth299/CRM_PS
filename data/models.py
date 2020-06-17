@@ -186,5 +186,8 @@ class Entry(models.Model):
     entry_type  = models.CharField(choices = CHOICES_ENTRY_TYPE, max_length = MAX_ENTRY_TYPE, verbose_name = "Entry Type")
     entry_date    = models.DateField(default = timezone.now, verbose_name = "Entry Date")
 
+    class Meta:
+         verbose_name_plural = "Entries"
+
     def __str__(self):
         return str(self.entry_type)
