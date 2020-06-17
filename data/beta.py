@@ -37,9 +37,9 @@ class ProductAdmin(admin.ModelAdmin):
 class ClientAdmin(admin.ModelAdmin):
 
 	fieldsets = [
-		(None,			{'fields': ['client_name','client_category','btc','gstin','balance']}),
+		(None, {'fields': ['client_name','client_category','btc','gstin','balance']}),
 		('Contact', {'fields': ['contact_person','telephone_main','telephone_extra','email']}),
-		('Address',		{'fields' : ['address','city','pin_code','state','country','zone']}),
+		('Address',	{'fields' : ['address','city','pin_code','state','country','zone']}),
 		('Lead Details', {'fields' : ['lead_source','client_rank','remarks','created_by']}),
 		]
 	readonly_fields = ('balance','created_by')
@@ -109,6 +109,16 @@ class SampleAdmin(admin.ModelAdmin):
 
 class TargetAdmin(admin.ModelAdmin):
 
+	fieldsets = [
+		('User Information', {'fields': ['user_id', 'period',]}),
+		(None, {'fields': ['big', 'other', 'sale_value',]} ),
+		(None, {'fields': ['lead_gen','mnoc', 'hit_ratio',]} ),
+		('Sales Type', {'fields': ['cross_sale', 'ref_sale', 'up_sale', 'lost_sale', 'rank_6_7',]}),
+		(None, {'fields': ['d_appointment', 'appr_letter',]} ),
+		(None, {'fields': ['ats', 'total_outstanding',]} ),
+		('MTD', {'fields': ['MTD_sales', 'MTD_collection',]} ),
+	]
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
@@ -136,7 +146,7 @@ class EntryAdmin(admin.ModelAdmin):
 		'entry_type',
 		'entry_date'
 	]
-	
+
 	search_fields = ('user_id',)
 
 	list_filter = ['entry_type', ('entry_date',DateFieldListFilter)]
