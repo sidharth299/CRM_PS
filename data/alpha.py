@@ -48,6 +48,11 @@ class SaleAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_name',)
 	readonly_fields = ('invoice_number','amount_paid','first_date','last_date','created_by','sgst','igst','cgst','export_sale','total_amount')
 
+	fieldsets = [
+		('Sale Details', {'fields': ['client_name', 'sale_date', 'invoice_number', 'carting', 'gstin', 'remarks', 'created_by']}),
+		('Amount Payable', {'fields': ['tax_type', 'igst', 'cgst', 'sgst', 'export_sale', 'total_amount', 'amount_paid', 'first_date', 'last_date']})
+	]
+
 	list_filter = (AdvanceInvoiceListFilter, 'tax_type', ('sale_date', DateFieldListFilter))
 	inlines = [BillInline]
 
