@@ -18,6 +18,3 @@ class AdvanceInvoiceListFilter(admin.SimpleListFilter):
             return queryset.filter(total_amount=0,amount_paid__gte=0)
         if self.value() == 'nonadvance':
             return queryset.filter(total_amount__gt=0)
-
-
-    

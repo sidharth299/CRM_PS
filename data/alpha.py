@@ -1,5 +1,3 @@
-# import csv
-# from django.http import HttpResponse
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 from .dbconf import *
@@ -59,7 +57,7 @@ class SaleAdmin(admin.ModelAdmin):
 
 		instances = formset.save(commit=False)
 		request_dict = dict(request.POST)
-		# that is some new record
+		# new record
 		if not change:
 			amount = 0
 			for instance in instances:
@@ -109,7 +107,7 @@ class SaleAdmin(admin.ModelAdmin):
 			client.balance = client.balance + invoice.total_amount
 			client.save()
 
-		# for change
+		# updating record
 		if change:
 			for instance in instances:
 				product = Product.objects.get(pk=instance.product_name)
@@ -123,7 +121,7 @@ class SaleAdmin(admin.ModelAdmin):
 			amount = 0
 			for product in products:
 				amount = amount + (product.quantity*product.basic_rate)
-			""" here writing a function to delete any sub elements-products okay """
+			""" function to delete any sub elements (products) okay """
 
 			i = 1
 			while True:
@@ -138,7 +136,7 @@ class SaleAdmin(admin.ModelAdmin):
 						bill.delete()
 				i = i+1
 
-			"""finishes here"""
+			"""function end"""
 			temp = Bill.objects.filter(invoice_number_id = invoice_id).first()
 			product = Product.objects.get(pk=temp.product_name)
 			tax_rate = product.tax_rate
@@ -187,7 +185,7 @@ class SaleAdmin(admin.ModelAdmin):
 
 	def save_model(self, request, obj, form, change):
 
-		# means adding a new record not updating
+		# new record
 		if not change:
 			obj.created_by = request.user
 			obj.igst = 0
@@ -195,7 +193,7 @@ class SaleAdmin(admin.ModelAdmin):
 			obj.sgst = 0
 			obj.export_sale = 0
 			obj.total_amount = 0
-		# updating
+		# updating record
 		if change:
 			pass
 
@@ -225,7 +223,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 	def save_model(self, request, obj, form, change):
 
-		# means adding a new record not updating
+		# new record
 		if not change:
 			obj.created_by = request.user
 
@@ -241,7 +239,7 @@ class PaymentAdmin(admin.ModelAdmin):
 			client = Client.objects.get(pk = invoice.client_name)
 			client.balance = client.balance - obj.amount_received
 			client.save()
-
+		# updating record
 		if change:
 			keyword = request.path.split('/')
 			payment_id = keyword[3]

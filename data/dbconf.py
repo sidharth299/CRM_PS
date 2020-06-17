@@ -3,7 +3,6 @@ from django.contrib.admin.models import LogEntry
 # required for joining with admin log
 from django.contrib.contenttypes.models import ContentType
 
-# displaying messages in forms
 from django.contrib import messages
 from django.apps import apps
 from django.forms import TextInput, Textarea

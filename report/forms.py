@@ -1,6 +1,3 @@
-# used creating a form from a Model
-# from django.forms import ModelForm
-# creating a normal form
 from django import forms
 
 from django.contrib.auth.models import User
@@ -107,12 +104,3 @@ class PerfReport(forms.Form):
 								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
 								)
 	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
-
-
-"""
-# an example of how to generate forms from model
-class UserForm(ModelForm):
-	class Meta:
-		model = User
-		fields = ("username",)
-"""

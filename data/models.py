@@ -6,9 +6,6 @@ from datetime import datetime
 
 from .constants import *
 
-# has to have add some of the null=True only for the time being will fix it when backend will be populating the data instead
-# remove null from all places WHERE NOT required
-
 def get_financial_year():
     temp = datetime.now()
     month = temp.month
@@ -44,7 +41,6 @@ def get_invoice_number():
 class Product(models.Model):
     product_name     = models.CharField(max_length = MAX_PRODUCT_NAME, primary_key=True, verbose_name = "Product Name")
     product_category = models.CharField(choices = CHOICES_PRODUCT_CATEGORY, max_length = MAX_PRODUCT_CATEGORY, verbose_name = "Product Type")
-    # REMOVE NULL from hsn_code
     hsn_code         = models.PositiveIntegerField(null=True, verbose_name = "HSN Code")
     basic_rate       = models.PositiveIntegerField(verbose_name = "Basic Rate")
     tax_rate         = models.DecimalField(default=18.00,decimal_places = 2, max_digits = 4, verbose_name = "Tax Rate")
@@ -121,7 +117,6 @@ class Sample(models.Model):
 # only Admin/Accountants
 class Sale(models.Model):
 
-    #invoice_number  = models.AutoField(primary_key = True, verbose_name = "Invoice Number")
     invoice_number  = models.CharField(default = get_invoice_number, max_length = MAX_INVOICE_NUMBER , primary_key = True, verbose_name = "Invoice Number")
     sale_date       = models.DateField(default = timezone.now, verbose_name = "Sale Date")
     client_name     = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
@@ -147,7 +142,6 @@ class Bill(models.Model):
 
     invoice_number  = models.ForeignKey(Sale, on_delete = models.CASCADE, verbose_name = "Invoice Number")
     product_name    = models.ForeignKey(Product, on_delete = models.PROTECT, verbose_name = "Product Name")
-    # REMOVE null from basic rate
     basic_rate      = models.PositiveIntegerField(blank = True, null = True, verbose_name = "Basic Rate")
     quantity        = models.PositiveIntegerField(verbose_name = "Quantity")
 
@@ -163,9 +157,6 @@ class Payment(models.Model):
     def __str__(self):
         return str(self.invoice_number) + ' : Rs.' + str(self.amount_received)
 
-"""
-adding two new models
-"""
 class Target(models.Model):
     user_id           = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name ="User Name")
     period            = models.CharField(max_length = MAX_PERIOD, verbose_name = "Period")
@@ -197,9 +188,3 @@ class Entry(models.Model):
 
     def __str__(self):
         return str(self.entry_type)
-
-"""
-    def publish(self):
-        self.published_date = timezone.now()
-        self.save()
-"""
