@@ -6,7 +6,7 @@ from .filters import *
 
 class DsrAdmin(admin.ModelAdmin):
 	
-	raw_id_fields = ('client_name',)
+	raw_id_fields = ('client_name','product_name')
 	readonly_fields = ('created_by',)
 
 	def get_form(self, request, obj=None, **kwargs):
@@ -30,7 +30,7 @@ class DsrAdmin(admin.ModelAdmin):
 		super(DsrAdmin, self).save_model(request, obj, form, change)
 
 class BillInline(admin.TabularInline):
-
+	raw_id_fields = ('product_name',)
 	model = Bill
 	extra = 1
 
@@ -274,48 +274,3 @@ class PaymentAdmin(admin.ModelAdmin):
 		client.balance = client.balance + old_amount
 		client.save()
 		super(PaymentAdmin, self).delete_model(request, obj)
-
-"""
-class LogEntryAdmin(admin.ModelAdmin):
-
-	date_hierarchy = 'action_time'
-
-	#readonly_fields = LogEntry._meta.get_all_field_names()
-
-	list_filter = [
-	    'user',
-	    'content_type',
-	    'action_flag'
-	]
-
-	search_fields = [
-	    'object_repr',
-	    'change_message'
-	]
-
-
-	list_display = [
-	    'action_time',
-	    'user',
-	    'content_type',
-	    'action_flag_',
-	    'change_message',
-	]
-
-	def has_add_permission(self, request):
-	    return False
-
-	def has_change_permission(self, request, obj=None):
-	    return request.user.is_superuser and request.method != 'POST'
-
-	def has_delete_permission(self, request, obj=None):
-	    return False
-
-	def action_flag_(self, obj):
-	    flags = {
-	        1: "Addition",
-	        2: "Changed",
-	        3: "Deleted",
-	    }
-	    return flags[obj.action_flag]
-"""

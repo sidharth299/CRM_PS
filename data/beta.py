@@ -7,11 +7,11 @@ class ProductAdmin(admin.ModelAdmin):
 	# formfield_overrides = FORMFIELD_OVERRIDES
 	fieldsets = [
 		(None,			{'fields': ['product_name','product_category','hsn_code']}),
-		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate','remarks']}),
+		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate','remarks','created_by']}),
 		]
-
+	readonly_fields = ('created_by',)
 	search_fields = ('product_name',)
-
+	
 	list_display = [
 		'product_name',
 		'product_category',
@@ -40,10 +40,11 @@ class ClientAdmin(admin.ModelAdmin):
 		(None,			{'fields': ['client_name','client_category','btc','gstin','balance']}),
 		('Contact', {'fields': ['contact_person','telephone_main','telephone_extra','email']}),
 		('Address',		{'fields' : ['address','city','pin_code','state','country','zone']}),
-		('Lead Details', {'fields' : ['lead_source','client_rank','remarks']}),
+		('Lead Details', {'fields' : ['lead_source','client_rank','remarks','created_by']}),
 		]
-	readonly_fields = ('balance',)
-	
+	readonly_fields = ('balance','created_by')
+	search_fields = ('client_name',)
+
 	list_display = ('client_name','client_category','zone', 'client_rank', 'telephone_main')
 
 	list_filter = [
@@ -69,8 +70,12 @@ class ClientAdmin(admin.ModelAdmin):
 class SampleAdmin(admin.ModelAdmin):
 	fieldsets = [
 		('Client Details', {'fields': ['client_name','city']}),
-		('Sample Details', {'fields': ['sent_date','product_name','sample_quantity','sample_status','remarks']}),
+		('Sample Details', {'fields': ['sent_date','product_name','sample_quantity','sample_status','remarks','created_by']}),
 		]
+	
+	readonly_fields = ('created_by',)
+	raw_id_fields = ('client_name','product_name')
+
 	list_filter = [
 		'sample_status',
 		'product_name',
@@ -83,8 +88,6 @@ class SampleAdmin(admin.ModelAdmin):
 		'sample_status',
 		'sent_date',
 	]
-	
-	readonly_fields = ('created_by',)
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
