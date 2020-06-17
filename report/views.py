@@ -363,10 +363,63 @@ def perf_report(request):
 
 			calls=round(calls,2)
 
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='dealer_appointment'
+									'''.format(user_id,first_date,last_date)
+								)
+			d_app=0
 
+			for r in res:
+				d_app=r.c
 
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='a_letter'
+									'''.format(user_id,first_date,last_date)
+								)
 
-			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls}
+			a_letter=0
+
+			for r in res:
+				a_letter=r.c
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='big'
+									'''.format(user_id,first_date,last_date)
+								)
+
+			big=0
+
+			for r in res:
+				big=r.c
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='converted'
+									'''.format(user_id,first_date,last_date)
+								)
+
+			conv=0
+
+			for r in res:
+				conv=r.c
+
+			hit_ratio=round((calls/conv),2)
+
+			res = Dsr.objects.raw('''SELECT  id, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{1}' AND '{2}') and entry_type='repeat'
+									'''.format(user_id,first_date,last_date)
+								)
+
+			repeat=0
+
+			for r in res:
+				repeat=r.c
+
+			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls, 'd_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat}
 			return render(request,'report/perf_report.html',payload)
 		else:
 			payload['form'] = PerfReport()
