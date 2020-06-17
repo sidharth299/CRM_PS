@@ -357,11 +357,14 @@ def perf_report(request):
 								)
 
 			calls=0
+			num=0
 			for r in res:
 				r.count = round(r.count/3,2)
 				calls=calls+r.count
+				num=num+1
 
 			calls=round(calls,2)
+			avg_calls=round((calls/num),2)
 
 			res = Dsr.objects.raw('''SELECT  id, count(id) as c
 									FROM data_entry
@@ -441,7 +444,7 @@ def perf_report(request):
 			for r in res:
 				s_tot=s_tot+r.b
 
-			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls, 'd_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot}
+			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls,'avg_calls':avg_calls ,'d_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot}
 			return render(request,'report/perf_report.html',payload)
 		else:
 			payload['form'] = PerfReport()
