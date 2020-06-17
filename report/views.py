@@ -419,7 +419,29 @@ def perf_report(request):
 			for r in res:
 				repeat=r.c
 
-			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls, 'd_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat}
+			res = Sample.objects.raw('''SELECT data_payment.id, data_sale.client_name_id , round(avg(round(julianday(data_payment.date)-julianday(data_sale.sale_date)))) as avg ,sum(data_payment.amount_received) as b
+									FROM data_payment join data_sale on data_sale.invoice_number=data_payment.invoice_number_id
+									WHERE data_payment.created_by_id = '{0}' AND (data_payment.date BETWEEN '{1}' AND '{2}') group by data_sale.client_name_id order by data_sale.client_name_id
+									'''.format(user_id,first_date,last_date, )
+								)
+
+			p_tot=0
+
+			for r in res:
+				p_tot=p_tot+r.b
+
+			res = Sample.objects.raw('''SELECT invoice_number as id, client_name_id , sale_date, round(julianday('now')-julianday(sale_date)) as diff , sum(total_amount) as b
+									FROM data_sale 
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '{1}' AND '{2}')
+									'''.format(user_id,first_date,last_date,)
+								)
+	
+			s_tot=0
+
+			for r in res:
+				s_tot=s_tot+r.b
+
+			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls, 'd_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot}
 			return render(request,'report/perf_report.html',payload)
 		else:
 			payload['form'] = PerfReport()
