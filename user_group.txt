@@ -1,0 +1,31 @@
+The following permission should be provided to the "salesperson" group:
+
+data | bill | Can add bill
+data | bill | Can change bill
+data | bill | Can delete bill
+data | bill | Can view bill
+
+data | client | Can add client
+data | client | Can change client
+data | client | Can view client
+
+data | dsr | Can add dsr
+data | dsr | Can change dsr
+data | dsr | Can view dsr
+
+data | entry | Can add entry
+data | entry | Can view entry
+
+data | payment | Can add payment
+data | payment | Can change payment
+data | payment | Can view payment
+
+data | product | Can view product
+
+data | sale | Can view sale
+
+data | sample | Can add sample
+data | sample | Can change sample
+data | sample | Can view sample
+
+data | target | Can view target
