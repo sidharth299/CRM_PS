@@ -1,0 +1,29 @@
+{% extends 'report/base.html' %}
+
+{% block content %}
+<h5> Performance report of: {{username}}</h5>
+<h6>from {{firstdate}} to {{lastdate}}</h6>
+
+<table class="table table-hover">
+
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">METRIC</th>
+        <th scope="col">ACHIEVED</th>
+       
+      </tr>
+    </thead>
+  
+    <tbody>
+    
+      <tr>
+        <td>Total calls</td>
+        <td>{{calls}}</td>
+      </tr>
+    
+    </tbody>
+  </table>
+
+
+
+  {% endblock %}

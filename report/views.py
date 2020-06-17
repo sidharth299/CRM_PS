@@ -331,3 +331,48 @@ def daily_sales(request):
 	
 	return render(request,'report/report_form.html',payload)
 
+
+@login_required(login_url='/login/')
+def perf_report(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = PerfReport(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			first_date = form.cleaned_data['start_date']
+			last_date = form.cleaned_data['end_date']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			res = Dsr.objects.raw('''SELECT  id,date_of_contact,
+									SUM(CASE WHEN contact_mode = 'Visit' THEN 3
+											WHEN contact_mode in ('Telephone','Email','WhatsApp') THEN 1
+											ELSE 0 END) 
+									AS count 
+									FROM data_dsr
+									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '{1}' AND '{2}')
+									GROUP BY date_of_contact
+									'''.format(user_id,first_date,last_date)
+								)
+
+			calls=0
+			for r in res:
+				r.count = round(r.count/3,2)
+				calls=calls+r.count
+
+			calls=round(calls,2)
+
+
+
+
+			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls}
+			return render(request,'report/perf_report.html',payload)
+		else:
+			payload['form'] = PerfReport()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = PerfReport()
+	
+	return render(request,'report/report_form.html',payload)
