@@ -440,11 +440,23 @@ def perf_report(request):
 								)
 	
 			s_tot=0
+			num_invoice=0
 
 			for r in res:
 				s_tot=s_tot+r.b
+				
+			res = Sample.objects.raw('''SELECT invoice_number as id, client_name_id , sale_date, total_amount as b
+									FROM data_sale 
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '{1}' AND '{2}')
+									'''.format(user_id,first_date,last_date,)
+								)
 
-			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls,'avg_calls':avg_calls ,'d_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot}
+			for r in res:
+				num_invoice=num_invoice+1
+
+			ats=round((s_tot/num_invoice),2)
+
+			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls,'avg_calls':avg_calls ,'d_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot, 'num_invoice':num_invoice, 'ats':ats}
 			return render(request,'report/perf_report.html',payload)
 		else:
 			payload['form'] = PerfReport()
