@@ -108,7 +108,6 @@ class SampleAdmin(admin.ModelAdmin):
 
 		super(SampleAdmin, self).save_model(request, obj, form, change)
 
-"""
 class TargetAdmin(admin.ModelAdmin):
 
 	fieldsets = [
@@ -132,7 +131,6 @@ class TargetAdmin(admin.ModelAdmin):
 		'user_id',
 		'period',
 	]
-"""
 
 class EntryAdmin(admin.ModelAdmin):
 
