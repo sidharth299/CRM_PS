@@ -478,8 +478,95 @@ def strategic_report(request):
 
 			user_id = (User.objects.filter(username=username).first()).id
 
+
+			d_appointment=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,12):
+				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='dealer_appointment' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i)
+								)
 			
-			payload = {'username':username,}
+				d_app=0
+				for r in res:
+					d_app=r.c
+				if i<4:
+					d_appointment[i+8]=d_app
+				else:
+					d_appointment[i-4]=d_app
+
+
+			a_letter_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,12):
+				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='a_letter' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i)
+								)
+			
+				a_letter=0
+				for r in res:
+					a_letter=r.c
+				if i<4:
+					a_letter_list[i+8]=a_letter
+				else:
+					a_letter_list[i-4]=a_letter
+
+			big_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,12):
+				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='big' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i)
+								)
+			
+				big=0
+				for r in res:
+					big=r.c
+				if i<4:
+					big_list[i+8]=big
+				else:
+					big_list[i-4]=big
+
+			conv_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,12):
+				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='converted' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i)
+								)
+			
+				conv=0
+				for r in res:
+					conv=r.c
+				if i<4:
+					conv_list[i+8]=conv
+				else:
+					conv_list[i-4]=conv
+
+			repeat_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,12):
+				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='repeat' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i)
+								)
+			
+				repeat=0
+				for r in res:
+					repeat=r.c
+				if i<4:
+					repeat_list[i+8]=repeat
+				else:
+					repeat_list[i-4]=repeat
+
+
+			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list}
 			return render(request,'report/strategic_report.html',payload)
 		else:
 			payload['form'] = StrategicReport()

@@ -37,18 +37,30 @@
         </tr>
         <tr>
             <td>No. of Dealer Appointments</td>
+            {% for i in d_appointment %}
+                <td>{{i}}</td>
+            {% endfor %}
             
         </tr>
         <tr>
             <td>No. of Appreciation Letters</td>
+            {% for i in a_letter %}
+                <td>{{i}}</td>
+            {% endfor %}
            
         </tr>
         <tr>
             <td>No. of BIG customers obtained</td>
+            {% for i in big %}
+                <td>{{i}}</td>
+            {% endfor %}
             
         </tr>
         <tr>
             <td>No. of Leads converted to Customers (rank 6)</td>
+            {% for i in conv %}
+                <td>{{i}}</td>
+            {% endfor %}
            
         </tr>
         <tr>
@@ -57,6 +69,9 @@
         </tr>
         <tr>
             <td>No. of rank 6-7 conversions:</td>
+            {% for i in repeat %}
+                <td>{{i}}</td>
+            {% endfor %}
           
         </tr>
         <tr>
