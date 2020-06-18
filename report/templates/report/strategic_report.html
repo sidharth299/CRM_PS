@@ -29,10 +29,16 @@
        
         <tr>
             <td>Total calls</td>
+            {% for i in t_calls %}
+                <td>{{i}}</td>
+            {% endfor %}
 
         </tr>
         <tr>
             <td>Average calls</td>
+            {% for i in avg_calls %}
+                <td>{{i}}</td>
+            {% endfor %}
             
         </tr>
         <tr>
@@ -65,6 +71,10 @@
         </tr>
         <tr>
             <td>HIT RATIO</td>
+            {% for i in hit_ratio %}
+                <td>{{i}}</td>
+            {% endfor %}
+            
            
         </tr>
         <tr>

@@ -653,8 +653,56 @@ def strategic_report(request):
 				else:
 					payment_list[i-4]=p_tot
 
+			total_call_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			avg_call_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
-			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list}
+			for i in range(1,13):
+				if i<10:
+					res = Dsr.objects.raw('''SELECT  id,date_of_contact ,
+									SUM(CASE WHEN contact_mode = 'Visit' THEN 3
+											WHEN contact_mode in ('Telephone','Email','WhatsApp') THEN 1
+											ELSE 0 END) 
+									AS count 
+									FROM data_dsr
+									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date_of_contact)='0{1}' group by date_of_contact
+									'''.format(user_id, i)
+								)
+				else:
+					res = Dsr.objects.raw('''SELECT  id,date_of_contact ,
+									SUM(CASE WHEN contact_mode = 'Visit' THEN 3
+											WHEN contact_mode in ('Telephone','Email','WhatsApp') THEN 1
+											ELSE 0 END) 
+									AS count 
+									FROM data_dsr
+									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date_of_contact)='{1}' group by date_of_contact
+									'''.format(user_id, i)
+								)
+				calls=0
+				num=0
+				avg_calls=0
+				for r in res:
+					r.count = round(r.count/3,2)
+					calls=calls+r.count
+					num=num+1
+
+				calls=round(calls,2)
+				if num!=0:
+					avg_calls=round((calls/num),2)
+			
+				if i<4:
+					total_call_list[i+8]=calls
+					avg_call_list[i+8]=avg_calls
+				else:
+					total_call_list[i-4]=calls
+					avg_call_list[i-4]=avg_calls
+
+			hit_ratio_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				if conv_list[i]==0:
+					continue
+				hit_ratio_list[i]=round((total_call_list[i]/conv_list[i]),2)
+
+			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
 			return render(request,'report/strategic_report.html',payload)
 		else:
 			payload['form'] = StrategicReport()
