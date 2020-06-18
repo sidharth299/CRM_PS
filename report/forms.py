@@ -104,3 +104,11 @@ class PerfReport(forms.Form):
 								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
 								)
 	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
+
+class StrategicReport(forms.Form):
+	username = forms.ModelChoiceField(
+									queryset=User.objects.all().order_by('username'),
+									help_text='select the username')
+
+	
+	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)

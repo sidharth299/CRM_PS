@@ -11,5 +11,6 @@ urlpatterns = [
     path('outstanding_report/', views.outstanding_report, name='outstanding_report'),
     path('payment_register/', views.payment_register, name='payment_register'),
     path('daily_sales/', views.daily_sales, name='daily_sales'),
-    path('perf_report/', views.perf_report, name='perf_report')
+    path('perf_report/', views.perf_report, name='perf_report'),
+    path('strategic_report/', views.strategic_report, name='strategic_report')
 ]

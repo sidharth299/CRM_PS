@@ -466,3 +466,26 @@ def perf_report(request):
 		payload['form'] = PerfReport()
 	
 	return render(request,'report/report_form.html',payload)
+
+@login_required(login_url='/login/')
+def strategic_report(request):
+	payload = {}
+
+	if request.method == 'POST':
+		form = StrategicReport(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+
+			user_id = (User.objects.filter(username=username).first()).id
+
+			
+			payload = {'username':username,}
+			return render(request,'report/strategic_report.html',payload)
+		else:
+			payload['form'] = StrategicReport()
+			return render(request,'report/report_form.html',payload)
+
+	else:
+		payload['form'] = StrategicReport()
+	
+	return render(request,'report/report_form.html',payload)
