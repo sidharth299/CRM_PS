@@ -630,7 +630,31 @@ def strategic_report(request):
 					continue
 				ats_list[i]=round((sale_list[i]/invoices_list[i]),2)
 
-			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list}
+			payment_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,13):
+				if i<10:
+					res = Dsr.objects.raw('''SELECT data_payment.id, data_payment.amount_received as b
+									FROM data_payment
+									WHERE created_by_id = '{0}' AND (date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date)='0{1}'
+									'''.format(user_id, i)
+								)
+				else:
+					res = Dsr.objects.raw('''SELECT data_payment.id, data_payment.amount_received as b
+									FROM data_payment
+									WHERE created_by_id = '{0}' AND (date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date)='{1}'
+									'''.format(user_id, i)
+								)
+				p_tot=0
+				for r in res:
+					p_tot=p_tot+r.b
+				if i<4:
+					payment_list[i+8]=p_tot
+				else:
+					payment_list[i-4]=p_tot
+
+
+			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list}
 			return render(request,'report/strategic_report.html',payload)
 		else:
 			payload['form'] = StrategicReport()

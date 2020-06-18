@@ -4,7 +4,7 @@
 <h5> Strategic report of: {{username}}</h5>
 
 
-<table class="table table-hover">
+<table class="table table-hover table-bordered table-striped">
 
     <thead class="thead-dark">
       <tr>
@@ -83,6 +83,9 @@
         </tr>
         <tr>
             <td>Total Collection (Payment Received):</td>
+            {% for i in payment %}
+                <td>{{i}}</td>
+            {% endfor %}
            
         </tr>
         <tr>
