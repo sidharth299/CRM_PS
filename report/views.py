@@ -481,7 +481,7 @@ def strategic_report(request):
 
 			d_appointment=[0,0,0,0,0,0,0,0,0,0,0,0]
 
-			for i in range(1,12):
+			for i in range(1,13):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
@@ -505,7 +505,7 @@ def strategic_report(request):
 
 			a_letter_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
-			for i in range(1,12):
+			for i in range(1,13):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
@@ -528,7 +528,7 @@ def strategic_report(request):
 
 			big_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
-			for i in range(1,12):
+			for i in range(1,13):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
@@ -551,7 +551,7 @@ def strategic_report(request):
 
 			conv_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
-			for i in range(1,12):
+			for i in range(1,13):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
@@ -574,7 +574,7 @@ def strategic_report(request):
 
 			repeat_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
-			for i in range(1,12):
+			for i in range(1,13):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
@@ -595,8 +595,42 @@ def strategic_report(request):
 				else:
 					repeat_list[i-4]=repeat
 
+			sale_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			invoices_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
-			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list}
+			for i in range(1,13):
+				if i<10:
+					res = Dsr.objects.raw('''SELECT invoice_number as id, total_amount as b
+									FROM data_sale 
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',sale_date)='0{1}'
+									'''.format(user_id, i)
+								)
+				else:
+					res = Dsr.objects.raw('''SELECT invoice_number as id, total_amount as b
+									FROM data_sale 
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',sale_date)='{1}'
+									'''.format(user_id, i)
+								)
+				
+				s_tot=0
+				num_invoice=0
+				for r in res:
+					s_tot=s_tot+r.b
+					num_invoice=num_invoice+1
+				if i<4:
+					sale_list[i+8]=s_tot
+					invoices_list[i+8]=num_invoice
+				else:
+					sale_list[i-4]=s_tot
+					invoices_list[i-4]=num_invoice
+
+			ats_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				if invoices_list[i]==0:
+					continue
+				ats_list[i]=round((sale_list[i]/invoices_list[i]),2)
+
+			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list}
 			return render(request,'report/strategic_report.html',payload)
 		else:
 			payload['form'] = StrategicReport()

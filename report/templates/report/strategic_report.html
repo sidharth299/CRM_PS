@@ -76,6 +76,9 @@
         </tr>
         <tr>
             <td>Total Sales:</td>
+            {% for i in sales %}
+                <td>{{i}}</td>
+            {% endfor %}
             
         </tr>
         <tr>
@@ -84,10 +87,16 @@
         </tr>
         <tr>
             <td>No. of invoices generated:</td>
+            {% for i in invoices %}
+                <td>{{i}}</td>
+            {% endfor %}
             
         </tr>
         <tr>
             <td>ATS:</td>
+            {% for i in ats %}
+                <td>{{i}}</td>
+            {% endfor %}
            
         </tr>
     
