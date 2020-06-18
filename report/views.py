@@ -482,12 +482,18 @@ def strategic_report(request):
 			d_appointment=[0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,12):
-				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+				if i<10:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
 									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='dealer_appointment' and strftime('%m',entry_date)='0{1}'
 									'''.format(user_id, i)
 								)
-			
+				else:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='dealer_appointment' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i)
+								)
 				d_app=0
 				for r in res:
 					d_app=r.c
@@ -500,12 +506,18 @@ def strategic_report(request):
 			a_letter_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,12):
-				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+				if i<10:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
 									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='a_letter' and strftime('%m',entry_date)='0{1}'
 									'''.format(user_id, i)
 								)
-			
+				else:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='a_letter' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i)
+								)
 				a_letter=0
 				for r in res:
 					a_letter=r.c
@@ -517,12 +529,18 @@ def strategic_report(request):
 			big_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,12):
-				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+				if i<10:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
 									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='big' and strftime('%m',entry_date)='0{1}'
 									'''.format(user_id, i)
 								)
-			
+				else:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='big' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i)
+								)
 				big=0
 				for r in res:
 					big=r.c
@@ -534,12 +552,18 @@ def strategic_report(request):
 			conv_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,12):
-				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+				if i<10:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
 									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='converted' and strftime('%m',entry_date)='0{1}'
 									'''.format(user_id, i)
 								)
-			
+				else:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='converted' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i)
+								)
 				conv=0
 				for r in res:
 					conv=r.c
@@ -551,12 +575,18 @@ def strategic_report(request):
 			repeat_list=[0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,12):
-				res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+				if i<10:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
 									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='repeat' and strftime('%m',entry_date)='0{1}'
 									'''.format(user_id, i)
 								)
-			
+				else:
+					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
+									FROM data_entry
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='repeat' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i)
+								)
 				repeat=0
 				for r in res:
 					repeat=r.c
