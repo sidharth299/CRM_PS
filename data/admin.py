@@ -12,5 +12,8 @@ admin.site.register(Sample, SampleAdmin)
 admin.site.register(Sale, SaleAdmin)
 admin.site.register(Payment, PaymentAdmin)
 
+"""
 admin.site.register(Target, TargetAdmin)
+"""
+
 admin.site.register(Entry, EntryAdmin)

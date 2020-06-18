@@ -10,7 +10,7 @@ class ProductAdmin(admin.ModelAdmin):
 		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate','remarks','created_by']}),
 		]
 	readonly_fields = ('created_by',)
-	search_fields = ('product_name',)
+	search_fields = ('product_name','hsn_code')
 
 	list_display = [
 		'product_name',
@@ -77,6 +77,8 @@ class SampleAdmin(admin.ModelAdmin):
 	readonly_fields = ('created_by',)
 	raw_id_fields = ('client_name','product_name')
 
+	search_fields = ('client_name', 'product_name')
+
 	list_filter = [
 		'sample_status',
 		'product_name',
@@ -106,7 +108,7 @@ class SampleAdmin(admin.ModelAdmin):
 
 		super(SampleAdmin, self).save_model(request, obj, form, change)
 
-
+"""
 class TargetAdmin(admin.ModelAdmin):
 
 	fieldsets = [
@@ -130,7 +132,7 @@ class TargetAdmin(admin.ModelAdmin):
 		'user_id',
 		'period',
 	]
-
+"""
 
 class EntryAdmin(admin.ModelAdmin):
 

@@ -9,8 +9,8 @@ class DsrAdmin(admin.ModelAdmin):
 	readonly_fields = ('created_by',)
 
 	list_display = ['client_name', 'date_of_contact', 'action', 'next_call_date']
-
-	list_filter = ['contact_mode', 'client_rank', 'sample_status', ]
+	search_fields = ['client_name', ]
+	list_filter = ['contact_mode', 'client_rank', 'sample_status', ('date_of_contact', DateFieldListFilter) ]
 
 	fieldsets = [
 		(None, {'fields': ['client_name', 'product_name', 'date_of_contact']}),
@@ -53,6 +53,7 @@ class SaleAdmin(admin.ModelAdmin):
 		('Amount Payable', {'fields': ['tax_type', 'igst', 'cgst', 'sgst', 'export_sale', 'total_amount', 'amount_paid', 'first_date', 'last_date']})
 	]
 
+	search_fields = ['invoice_number', 'client_name',]
 	list_filter = (AdvanceInvoiceListFilter, 'tax_type', ('sale_date', DateFieldListFilter))
 	inlines = [BillInline]
 
@@ -225,6 +226,8 @@ class PaymentAdmin(admin.ModelAdmin):
 	readonly_fields = ('created_by',)
 
 	list_display = ['invoice_number', 'amount_received', 'date']
+	list_filter = [('date', DateFieldListFilter)]
+	search_fields = ('invoice_number',)
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
