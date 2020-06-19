@@ -44,7 +44,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # for common templates
-        'DIRS': ['crm/templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # <- add this line
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
