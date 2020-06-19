@@ -48,8 +48,9 @@ def line_chart(request):
 				r.count = round(r.count/3,2)
 				calls=calls+r.count
 				num=num+1
-
-			calls= round((calls/num),2)
+			
+			if num!=0:
+				calls= round((calls/num),2)
 
 			if is_csv:
 				response = HttpResponse(content_type='text/csv')
@@ -358,13 +359,16 @@ def perf_report(request):
 
 			calls=0
 			num=0
+			avg_calls=0
+
 			for r in res:
 				r.count = round(r.count/3,2)
 				calls=calls+r.count
 				num=num+1
 
 			calls=round(calls,2)
-			avg_calls=round((calls/num),2)
+			if num!=0:
+				avg_calls=round((calls/num),2)
 
 			res = Dsr.objects.raw('''SELECT  id, count(id) as c
 									FROM data_entry
@@ -405,11 +409,12 @@ def perf_report(request):
 								)
 
 			conv=0
-
+			hit_ratio=0
 			for r in res:
 				conv=r.c
 
-			hit_ratio=round((calls/conv),2)
+			if conv!=0:
+				hit_ratio=round((calls/conv),2)
 
 			res = Dsr.objects.raw('''SELECT  id, count(id) as c
 									FROM data_entry
@@ -443,7 +448,8 @@ def perf_report(request):
 			num_invoice=0
 
 			for r in res:
-				s_tot=s_tot+r.b
+				if r.b!=None:
+					s_tot=s_tot+r.b
 				
 			res = Sample.objects.raw('''SELECT invoice_number as id, client_name_id , sale_date, total_amount as b
 									FROM data_sale 
@@ -454,7 +460,10 @@ def perf_report(request):
 			for r in res:
 				num_invoice=num_invoice+1
 
-			ats=round((s_tot/num_invoice),2)
+			ats=0
+
+			if num_invoice!=0:
+				ats=round((s_tot/num_invoice),2)
 
 			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls,'avg_calls':avg_calls ,'d_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot, 'num_invoice':num_invoice, 'ats':ats}
 			return render(request,'report/perf_report.html',payload)
