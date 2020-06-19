@@ -44,7 +44,7 @@ class ClientAdmin(admin.ModelAdmin):
 		]
 	readonly_fields = ('balance','client_rank','created_by')
 
-	search_fields = ('client_name',)
+	search_fields = ('client_name', 'telephone_main')
 
 	list_display = ('client_name','client_category','zone', 'client_rank', 'telephone_main')
 
@@ -77,7 +77,7 @@ class SampleAdmin(admin.ModelAdmin):
 	readonly_fields = ('created_by',)
 	raw_id_fields = ('client_name','product_name')
 
-	search_fields = ('client_name', 'product_name')
+	search_fields = ('client_name__client_name', 'product_name__product_name')
 
 	list_filter = [
 		'sample_status',
@@ -147,6 +147,6 @@ class EntryAdmin(admin.ModelAdmin):
 		'entry_date'
 	]
 
-	search_fields = ('user_id',)
+	search_fields = ('user_id__username',)
 
 	list_filter = ['entry_type', ('entry_date',DateFieldListFilter)]

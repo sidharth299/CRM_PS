@@ -187,7 +187,7 @@ class Payment(models.Model):
 
     class Meta:
         verbose_name = 'payment'
-        verbose_name_plural = 'Payment'
+        verbose_name_plural = 'Payments Register'
 
 class Target(models.Model):
     user_id           = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name ="Username")
