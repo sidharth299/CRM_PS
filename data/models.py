@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+
 from datetime import datetime
 
 from .constants import *
@@ -116,6 +118,12 @@ class Dsr(models.Model):
     class Meta:
         verbose_name = 'daily sales report'
         verbose_name_plural = 'Daily Sales Reports'
+
+    def clean(self):
+        if self.client_rank in [1,2,3,4,5] and self.successful_sale == True:
+            raise ValidationError('A sale with rank-'+str(self.client_rank)+' can not be successful')
+        if self.client_rank in [6,7] and self.failed_sale == True:
+            raise ValidationError('A sale with rank-'+str(self.client_rank)+' can not be failed')
 
 class Sample(models.Model):
 
