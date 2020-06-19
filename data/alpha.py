@@ -8,8 +8,8 @@ class DsrAdmin(admin.ModelAdmin):
 	raw_id_fields = ('product_name','client_name')
 	readonly_fields = ('created_by',)
 
-	list_display = ['client_name', 'date_of_contact', 'action', 'next_call_date']
-	search_fields = ['client_name', ]
+	list_display = ['client_name', 'date_of_contact', 'action', 'next_call_date',]
+	search_fields = ['client_name__client_name',]
 	list_filter = ['contact_mode', 'client_rank', 'sample_status', ('date_of_contact', DateFieldListFilter) ]
 
 	fieldsets = [
@@ -34,7 +34,7 @@ class DsrAdmin(admin.ModelAdmin):
 				obj.telephone = person.telephone_main
 			if obj.email == '':
 				obj.email = person.email
-		
+
 		client = Client.objects.get(pk = obj.client_name)
 		client.client_rank = obj.client_rank
 		client.save()
@@ -55,7 +55,7 @@ class SaleAdmin(admin.ModelAdmin):
 		('Amount Payable', {'fields': ['tax_type', 'igst', 'cgst', 'sgst', 'export_sale', 'total_amount', 'amount_paid', 'first_date', 'last_date']})
 	]
 
-	search_fields = ['invoice_number', 'client_name',]
+	search_fields = ['invoice_number', 'client_name__client_name',]
 	list_filter = (AdvanceInvoiceListFilter, 'tax_type', ('sale_date', DateFieldListFilter))
 	inlines = [BillInline]
 
@@ -229,7 +229,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 	list_display = ['invoice_number', 'amount_received', 'date']
 	list_filter = [('date', DateFieldListFilter)]
-	search_fields = ('invoice_number',)
+	search_fields = ('invoice_number__invoice_number',)
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
@@ -304,7 +304,7 @@ class PersonAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_name',)
 
 	list_display = ['name', 'client_name', 'telephone_main', 'email']
-	search_fields = ['name','client_name', 'telephone_main' ]
+	search_fields = ['name','client_name__client_name', 'telephone_main' ]
 
 	fieldsets = [
 		(None, {'fields': ['name', 'client_name']}),
