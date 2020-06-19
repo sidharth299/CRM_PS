@@ -121,9 +121,9 @@ class Dsr(models.Model):
 
     def clean(self):
         if self.client_rank in [1,2,3,4,5] and self.successful_sale == True:
-            raise ValidationError('A sale with rank-'+str(self.client_rank)+' can not be successful')
+            raise ValidationError('A sale with Rank - '+str(self.client_rank)+' can not be a successful sale')
         if self.client_rank in [6,7] and self.failed_sale == True:
-            raise ValidationError('A sale with rank-'+str(self.client_rank)+' can not be failed')
+            raise ValidationError('A sale with Rank - '+str(self.client_rank)+' can not be failed sale')
 
 class Sample(models.Model):
 
