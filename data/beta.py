@@ -20,8 +20,6 @@ class ProductAdmin(admin.ModelAdmin):
 
 	list_filter = [	'product_category',]
 
-	search_fields = ('product_name',)
-
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
