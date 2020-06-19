@@ -110,5 +110,5 @@ class StrategicReport(forms.Form):
 									queryset=User.objects.all().order_by('username'),
 									help_text='select the username')
 
-	
+	year= forms.IntegerField(max_value=2050, min_value=2000,initial=2019)
 	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)

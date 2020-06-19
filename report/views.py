@@ -475,7 +475,8 @@ def strategic_report(request):
 		form = StrategicReport(request.POST)
 		if form.is_valid():
 			username = form.cleaned_data['username']
-
+			year1 = form.cleaned_data['year']
+			year2=year1+1
 			user_id = (User.objects.filter(username=username).first()).id
 
 
@@ -485,14 +486,14 @@ def strategic_report(request):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='dealer_appointment' and strftime('%m',entry_date)='0{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='dealer_appointment' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='dealer_appointment' and strftime('%m',entry_date)='{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='dealer_appointment' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				d_app=0
 				for r in res:
@@ -509,14 +510,14 @@ def strategic_report(request):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='a_letter' and strftime('%m',entry_date)='0{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='a_letter' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='a_letter' and strftime('%m',entry_date)='{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='a_letter' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				a_letter=0
 				for r in res:
@@ -532,14 +533,14 @@ def strategic_report(request):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='big' and strftime('%m',entry_date)='0{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='big' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='big' and strftime('%m',entry_date)='{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='big' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				big=0
 				for r in res:
@@ -555,14 +556,14 @@ def strategic_report(request):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='converted' and strftime('%m',entry_date)='0{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='converted' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='converted' and strftime('%m',entry_date)='{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='converted' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				conv=0
 				for r in res:
@@ -578,14 +579,14 @@ def strategic_report(request):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='repeat' and strftime('%m',entry_date)='0{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='repeat' and strftime('%m',entry_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT  id, strftime('%m',entry_date) as m, count(id) as c
 									FROM data_entry
-									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '2019-04-01' AND '2020-03-31') and entry_type='repeat' and strftime('%m',entry_date)='{1}'
-									'''.format(user_id, i)
+									WHERE user_id_id = '{0}' AND (entry_date BETWEEN '{2}-04-01' AND '{3}-03-31') and entry_type='repeat' and strftime('%m',entry_date)='{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				repeat=0
 				for r in res:
@@ -602,14 +603,14 @@ def strategic_report(request):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT invoice_number as id, total_amount as b
 									FROM data_sale 
-									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',sale_date)='0{1}'
-									'''.format(user_id, i)
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '{2}-04-01' AND '{3}-03-31') and strftime('%m',sale_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT invoice_number as id, total_amount as b
 									FROM data_sale 
-									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',sale_date)='{1}'
-									'''.format(user_id, i)
+									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '{2}-04-01' AND '{3}-03-31') and strftime('%m',sale_date)='{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				
 				s_tot=0
@@ -636,14 +637,14 @@ def strategic_report(request):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT data_payment.id, data_payment.amount_received as b
 									FROM data_payment
-									WHERE created_by_id = '{0}' AND (date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date)='0{1}'
-									'''.format(user_id, i)
+									WHERE created_by_id = '{0}' AND (date BETWEEN '{2}-04-01' AND '{3}-03-31') and strftime('%m',date)='0{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT data_payment.id, data_payment.amount_received as b
 									FROM data_payment
-									WHERE created_by_id = '{0}' AND (date BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date)='{1}'
-									'''.format(user_id, i)
+									WHERE created_by_id = '{0}' AND (date BETWEEN '{2}-04-01' AND '{3}-03-31') and strftime('%m',date)='{1}'
+									'''.format(user_id, i, year1, year2)
 								)
 				p_tot=0
 				for r in res:
@@ -664,8 +665,8 @@ def strategic_report(request):
 											ELSE 0 END) 
 									AS count 
 									FROM data_dsr
-									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date_of_contact)='0{1}' group by date_of_contact
-									'''.format(user_id, i)
+									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '{2}-04-01' AND '{3}-03-31') and strftime('%m',date_of_contact)='0{1}' group by date_of_contact
+									'''.format(user_id, i, year1, year2)
 								)
 				else:
 					res = Dsr.objects.raw('''SELECT  id,date_of_contact ,
@@ -674,8 +675,8 @@ def strategic_report(request):
 											ELSE 0 END) 
 									AS count 
 									FROM data_dsr
-									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '2019-04-01' AND '2020-03-31') and strftime('%m',date_of_contact)='{1}' group by date_of_contact
-									'''.format(user_id, i)
+									WHERE created_by_id = '{0}' AND (date_of_contact BETWEEN '{2}-04-01' AND '{3}-03-31') and strftime('%m',date_of_contact)='{1}' group by date_of_contact
+									'''.format(user_id, i, year1, year2)
 								)
 				calls=0
 				num=0
@@ -702,7 +703,7 @@ def strategic_report(request):
 					continue
 				hit_ratio_list[i]=round((total_call_list[i]/conv_list[i]),2)
 
-			payload = {'username':username,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
+			payload = {'username':username,'year1':year1,'year2':year2  ,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
 			return render(request,'report/strategic_report.html',payload)
 		else:
 			payload['form'] = StrategicReport()
