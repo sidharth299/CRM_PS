@@ -60,7 +60,6 @@ class Client(models.Model):
     telephone_main   = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone")
     telephone_extra  = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone (Extra)")
     email            = models.EmailField(blank = True, verbose_name = "Email")
-    contact_person   = models.CharField(blank = True, max_length = MAX_CONTACT_PERSON, verbose_name = "Contact Person")
     address          = models.CharField(blank = True, max_length = MAX_ADDRESS, verbose_name = "Address")
     city             = models.CharField(blank = True, max_length = MAX_CITY, verbose_name = "City")
     pin_code         = models.PositiveIntegerField(blank = True, null=True, validators=[MinValueValidator(100000), MaxValueValidator(999999)], verbose_name = "PIN")
@@ -76,17 +75,35 @@ class Client(models.Model):
     def __str__(self):
         return self.client_name
 
+    class Meta:
+        verbose_name_plural = 'Clients (Lead Generation)'
+
+class Person(models.Model):
+    name             = models.CharField(max_length = MAX_CONTACT_PERSON, verbose_name = "Contact Person")
+    client_name      = models.ForeignKey(Client, on_delete = models.PROTECT)
+    telephone_main   = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone")
+    telephone_extra  = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone (Extra)")
+    email            = models.EmailField(blank = True, verbose_name = "Email")
+    remarks          = models.CharField(blank = True, max_length = MAX_REMARKS,verbose_name = "Remarks")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'contact person'
+        verbose_name_plural = 'Contact People'
+
 class Dsr(models.Model):
 
     client_name     = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
-    contact_person  = models.CharField(blank = True, max_length = MAX_CONTACT_PERSON, verbose_name = "Contact Person")
+    contact_person  = models.CharField(max_length = MAX_CONTACT_PERSON, verbose_name = "Contact Person")
     telephone       = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone")
     email           = models.EmailField(blank = True, verbose_name = "Email")
     contact_mode    = models.CharField(choices = CHOICES_CONTACT_MODE, max_length = MAX_CONTACT_MODE,  verbose_name = "Mode of Contact")
     date_of_contact = models.DateField(default = timezone.now,  verbose_name = "Date of Contact")
     action          = models.CharField(max_length = MAX_REMARKS,  verbose_name = "Action Taken")
     product_name    = models.ForeignKey(Product, blank = True, null = True,on_delete = models.PROTECT,  verbose_name = "Product Name")
-    next_call_date  = models.DateField( verbose_name = "Next Call Date")
+    next_call_date  = models.DateField(verbose_name = "Next Call Date")
     sample_status   = models.CharField(blank = True, choices = CHOICES_SAMPLE_STATUS, max_length = MAX_SAMPLE_STATUS, verbose_name = "Sample Status")
     client_rank     = models.PositiveSmallIntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(7)], verbose_name = "Client Rank")
     failed_sale     = models.BooleanField(default = False, verbose_name = "Failed Sale")
@@ -94,10 +111,10 @@ class Dsr(models.Model):
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By")
 
     def __str__(self):
-        return self.action
+        return str(self.client_name) + ' : ' + self.action
 
     class Meta:
-        verbose_name = 'Daily Sales Report'
+        verbose_name = 'daily sales report'
         verbose_name_plural = 'Daily Sales Reports'
 
 class Sample(models.Model):
@@ -113,6 +130,9 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.sample_status
+
+    class Meta:
+        verbose_name_plural = 'Samples Sent'
 
 # only Admin/Accountants
 class Sale(models.Model):
@@ -137,6 +157,10 @@ class Sale(models.Model):
     def __str__(self):
         return str(self.client_name)+': Invoice No.'+str(self.invoice_number)
 
+    class Meta:
+        verbose_name = 'sales invoice'
+        verbose_name_plural = 'Sales Invoices'
+
 # not to be displayed to anyone
 class Bill(models.Model):
 
@@ -148,6 +172,10 @@ class Bill(models.Model):
     def __str__(self):
         return str(self.product_name)+' : '+str(self.quantity)
 
+    class Meta:
+        verbose_name = 'product'
+        verbose_name_plural = 'Products'
+
 class Payment(models.Model):
     invoice_number  = models.ForeignKey(Sale, on_delete = models.CASCADE, verbose_name = "Invoice Number")
     date            = models.DateField(default = timezone.now, verbose_name = "Date")
@@ -157,10 +185,14 @@ class Payment(models.Model):
     def __str__(self):
         return str(self.invoice_number) + ' : Rs.' + str(self.amount_received)
 
+    class Meta:
+        verbose_name = 'payment'
+        verbose_name_plural = 'Payment'
+
 class Target(models.Model):
-    user_id           = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name ="User Name")
+    user_id           = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name ="Username")
     period            = models.CharField(max_length = MAX_PERIOD, verbose_name = "Period")
-    big               = models.IntegerField(default = 0, verbose_name = "Big Customers")
+    big               = models.IntegerField(default = 0, verbose_name = "Big Ticket Customers (BTC)")
     other             = models.IntegerField(default = 0, verbose_name = "Other")
     sale_value        = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "Sale Value")
     lead_gen          = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "Leads Generated")
@@ -182,12 +214,12 @@ class Target(models.Model):
         return str(self.user_id)
 
 class Entry(models.Model):
-    user_id       = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "User Name")
-    entry_type  = models.CharField(choices = CHOICES_ENTRY_TYPE, max_length = MAX_ENTRY_TYPE, verbose_name = "Entry Type")
+    user_id       = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Username")
+    entry_type    = models.CharField(choices = CHOICES_ENTRY_TYPE, max_length = MAX_ENTRY_TYPE, verbose_name = "Entry Type")
     entry_date    = models.DateField(default = timezone.now, verbose_name = "Entry Date")
 
     class Meta:
-         verbose_name_plural = "Entries"
+        verbose_name_plural = 'Entries'
 
     def __str__(self):
         return str(self.entry_type)

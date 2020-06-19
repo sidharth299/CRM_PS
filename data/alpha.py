@@ -5,7 +5,7 @@ from .filters import *
 
 class DsrAdmin(admin.ModelAdmin):
 
-	raw_id_fields = ('client_name','product_name')
+	raw_id_fields = ('product_name','client_name')
 	readonly_fields = ('created_by',)
 
 	list_display = ['client_name', 'date_of_contact', 'action', 'next_call_date']
@@ -29,13 +29,15 @@ class DsrAdmin(admin.ModelAdmin):
 	def save_model(self, request, obj, form, change):
 		if not change:
 			obj.created_by = request.user
-			client = Client.objects.get(pk = obj.client_name)
-			if obj.contact_person == '':
-				obj.contact_person = client.contact_person
+			person = Person.objects.filter(name = obj.contact_person).first()
 			if obj.telephone == '':
-				obj.telephone = client.telephone_main
+				obj.telephone = person.telephone_main
 			if obj.email == '':
-				obj.email = client.email
+				obj.email = person.email
+		
+		client = Client.objects.get(pk = obj.client_name)
+		client.client_rank = obj.client_rank
+		client.save()
 
 		super(DsrAdmin, self).save_model(request, obj, form, change)
 
@@ -297,3 +299,25 @@ class PaymentAdmin(admin.ModelAdmin):
 		client.balance = client.balance + old_amount
 		client.save()
 		super(PaymentAdmin, self).delete_model(request, obj)
+
+class PersonAdmin(admin.ModelAdmin):
+	raw_id_fields = ('client_name',)
+
+	list_display = ['name', 'client_name', 'telephone_main', 'email']
+	search_fields = ['name','client_name', 'telephone_main' ]
+
+	fieldsets = [
+		(None, {'fields': ['name', 'client_name']}),
+		('Contact Details', {'fields': ['telephone_main','telephone_extra','email','remarks']})
+	]
+
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		dfields = []
+		name = 'person'
+		form = customized_form(request,form,name, dfields)
+		return form
+
+	def save_model(self, request, obj, form, change):
+
+		super(PersonAdmin, self).save_model(request, obj, form, change)

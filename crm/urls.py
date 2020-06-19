@@ -8,4 +8,5 @@ urlpatterns = [
 	# changed this from the default 'admin/' url to -> ''
     path('', admin.site.urls),
     path('report/', include('report.urls')),
+    path('data/', include('data.urls'))
 ]
