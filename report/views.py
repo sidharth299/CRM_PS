@@ -489,7 +489,7 @@ def strategic_report(request):
 			user_id = (User.objects.filter(username=username).first()).id
 
 
-			d_appointment=[0,0,0,0,0,0,0,0,0,0,0,0]
+			d_appointment=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,13):
 				if i<10:
@@ -512,8 +512,11 @@ def strategic_report(request):
 				else:
 					d_appointment[i-4]=d_app
 
+			for i in range(12):
+				d_appointment[12]+=d_appointment[i]
 
-			a_letter_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+			a_letter_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,13):
 				if i<10:
@@ -536,7 +539,10 @@ def strategic_report(request):
 				else:
 					a_letter_list[i-4]=a_letter
 
-			big_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				a_letter_list[12]+=a_letter_list[i]
+
+			big_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,13):
 				if i<10:
@@ -559,7 +565,10 @@ def strategic_report(request):
 				else:
 					big_list[i-4]=big
 
-			conv_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				big_list[12]+=big_list[i]
+
+			conv_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,13):
 				if i<10:
@@ -582,7 +591,10 @@ def strategic_report(request):
 				else:
 					conv_list[i-4]=conv
 
-			repeat_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				conv_list[12]+=conv_list[i]
+
+			repeat_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,13):
 				if i<10:
@@ -605,8 +617,11 @@ def strategic_report(request):
 				else:
 					repeat_list[i-4]=repeat
 
-			sale_list=[0,0,0,0,0,0,0,0,0,0,0,0]
-			invoices_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				repeat_list[12]+=repeat_list[i]
+
+			sale_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			invoices_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,13):
 				if i<10:
@@ -634,13 +649,21 @@ def strategic_report(request):
 					sale_list[i-4]=s_tot
 					invoices_list[i-4]=num_invoice
 
-			ats_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				sale_list[12]=sale_list[12]+sale_list[i]
+				invoices_list[12]=invoices_list[12]+invoices_list[i]
+
+			ats_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 			for i in range(12):
 				if invoices_list[i]==0:
 					continue
 				ats_list[i]=round((sale_list[i]/invoices_list[i]),2)
 
-			payment_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			if invoices_list[12]!=0:
+				ats_list[12]=round((sale_list[12]/invoices_list[12]),2)
+
+
+			payment_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 			for i in range(1,13):
 				if i<10:
@@ -663,9 +686,14 @@ def strategic_report(request):
 				else:
 					payment_list[i-4]=p_tot
 
-			total_call_list=[0,0,0,0,0,0,0,0,0,0,0,0]
-			avg_call_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				payment_list[12]=payment_list[12]+payment_list[i]
 
+
+			total_call_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			avg_call_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+			num_avg=0
 			for i in range(1,13):
 				if i<10:
 					res = Dsr.objects.raw('''SELECT  id,date_of_contact ,
@@ -695,6 +723,8 @@ def strategic_report(request):
 					calls=calls+r.count
 					num=num+1
 
+				num_avg+=num
+
 				calls=round(calls,2)
 				if num!=0:
 					avg_calls=round((calls/num),2)
@@ -706,11 +736,23 @@ def strategic_report(request):
 					total_call_list[i-4]=calls
 					avg_call_list[i-4]=avg_calls
 
-			hit_ratio_list=[0,0,0,0,0,0,0,0,0,0,0,0]
+			for i in range(12):
+				total_call_list[12]+=total_call_list[i]
+
+			total_call_list[12]=round(total_call_list[12],2)
+
+			if num_avg!=0:
+				avg_call_list[12]=round((total_call_list[12]/num_avg),2)
+
+			hit_ratio_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 			for i in range(12):
 				if conv_list[i]==0:
 					continue
 				hit_ratio_list[i]=round((total_call_list[i]/conv_list[i]),2)
+
+			if conv_list[12]!=0:
+				hit_ratio_list[12]=round((total_call_list[12]/conv_list[12]),2)
+
 
 			payload = {'username':username,'year1':year1,'year2':year2  ,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
 			return render(request,'report/strategic_report.html',payload)
