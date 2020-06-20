@@ -72,6 +72,20 @@
            
         </tr>
         <tr>
+            <td>No. of Reference Sales</td>
+            {% for i in ref %}
+                <td>{{i}}</td>
+            {% endfor %}
+           
+        </tr>
+        <tr>
+            <td>No. of Cross Sales</td>
+            {% for i in cross %}
+                <td>{{i}}</td>
+            {% endfor %}
+           
+        </tr>
+        <tr>
             <td>HIT RATIO</td>
             {% for i in hit_ratio %}
                 <td>{{i}}</td>

@@ -593,6 +593,59 @@ def strategic_report(request):
 
 			for i in range(12):
 				conv_list[12]+=conv_list[i]
+			
+			ref_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,13):
+				if i<10:
+					res = Sale.objects.raw('''SELECT  invoice_number, strftime('%m',sale_date) as m, count(invoice_number) as c
+									FROM data_sale JOIN data_client ON client_name=client_name_id
+									WHERE data_sale.created_by_id = '{0}' AND (sale_date BETWEEN '{2}-04-01' AND '{3}-03-31') and lead_source='Reference' and strftime('%m',sale_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
+								)
+				else:
+					res = Sale.objects.raw('''SELECT  invoice_number, strftime('%m',sale_date) as m, count(invoice_number) as c
+									FROM data_sale JOIN data_client ON client_name=client_name_id
+									WHERE data_sale.created_by_id = '{0}' AND (sale_date BETWEEN '{2}-04-01' AND '{3}-03-31') and lead_source='Reference' and strftime('%m',sale_date)='{1}'
+									'''.format(user_id, i, year1, year2)
+								)
+				ref=0
+				for r in res:
+					ref=r.c
+				if i<4:
+					ref_list[i+8]=ref
+				else:
+					ref_list[i-4]=ref
+
+			for i in range(12):
+				ref_list[12]+=ref_list[i]
+
+			cross_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+			for i in range(1,13):
+				if i<10:
+					res = Sale.objects.raw('''SELECT  invoice_number, strftime('%m',sale_date) as m, count(invoice_number) as c
+									FROM data_sale 
+									WHERE data_sale.created_by_id = '{0}' AND (sale_date BETWEEN '{2}-04-01' AND '{3}-03-31') and remarks='CROSS' and strftime('%m',sale_date)='0{1}'
+									'''.format(user_id, i, year1, year2)
+								)
+				else:
+					res = Sale.objects.raw('''SELECT  invoice_number, strftime('%m',sale_date) as m, count(invoice_number) as c
+									FROM data_sale 
+									WHERE data_sale.created_by_id = '{0}' AND (sale_date BETWEEN '{2}-04-01' AND '{3}-03-31') and remarks='CROSS' and strftime('%m',sale_date)='{1}'
+									'''.format(user_id, i, year1, year2)
+								)
+				cross=0
+				for r in res:
+					cross=r.c
+				if i<4:
+					cross_list[i+8]=cross
+				else:
+					cross_list[i-4]=cross
+
+			for i in range(12):
+				cross_list[12]+=cross_list[i]
+
 
 			repeat_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -754,7 +807,7 @@ def strategic_report(request):
 				hit_ratio_list[12]=round((total_call_list[12]/conv_list[12]),2)
 
 
-			payload = {'username':username,'year1':year1,'year2':year2  ,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
+			payload = {'username':username,'year1':year1,'year2':year2  ,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'ref':ref_list, 'cross':cross_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
 			return render(request,'report/strategic_report.html',payload)
 		else:
 			payload['form'] = StrategicReport()
