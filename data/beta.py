@@ -132,19 +132,28 @@ class TargetAdmin(admin.ModelAdmin):
 
 class EntryAdmin(admin.ModelAdmin):
 
+	readonly_fields = ('user_id',)
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
 		name = 'entry'
-		form = customized_form(request,form,name, dfields)
+		form = customized_form(request, form, name, dfields)
 		return form
 
 	list_display = [
+		'client_name',
 		'user_id',
 		'entry_type',
 		'entry_date'
 	]
 
-	search_fields = ('user_id__username',)
+	search_fields = ('user_id__username','client_name__client_name')
 
 	list_filter = ['entry_type', ('entry_date',DateFieldListFilter)]
+
+	def save_model(self, request, obj, form, change):
+		if not change:
+			obj.user_id = request.user
+
+		super(EntryAdmin, self).save_model(request, obj, form, change)

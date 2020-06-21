@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="{% url 'admin:jsi18n' %}"></script>
+<!--{{ media }}-->
+<script type="text/javascript">
+
+document.addEventListener('DOMContentLoaded', function () {
+    var hash = document.getElementById('id_password');
+    hash.innerHTML = 'Raw passwords are not stored, so there is no way to see this user\'s password, but you can change\ the password using <a href="../password/">this form</a>.';
+
+    var help_message = document.querySelector('div.form-row.field-password > div > div.help');
+    help_message.innerHTML = '';
+});
+</script>
+
+{% endblock %}

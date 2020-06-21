@@ -93,7 +93,7 @@ class Person(models.Model):
 
     class Meta:
         verbose_name = 'contact person'
-        verbose_name_plural = 'Contact People'
+        verbose_name_plural = 'Contact Person Details'
 
 class Dsr(models.Model):
 
@@ -222,7 +222,8 @@ class Target(models.Model):
         return str(self.user_id)
 
 class Entry(models.Model):
-    user_id       = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Username")
+    client_name   = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
+    user_id       = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By")
     entry_type    = models.CharField(choices = CHOICES_ENTRY_TYPE, max_length = MAX_ENTRY_TYPE, verbose_name = "Entry Type")
     entry_date    = models.DateField(default = timezone.now, verbose_name = "Entry Date")
 
