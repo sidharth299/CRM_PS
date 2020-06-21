@@ -63,6 +63,8 @@ class ClientAdmin(admin.ModelAdmin):
 	def save_model(self, request, obj, form, change):
 		if not change:
 			obj.created_by = request.user
+			c = ClientAssignment(client_name = obj, created_by = request.user, assigned_to = request.user)
+			c.save()
 		super(ClientAdmin, self).save_model(request, obj, form, change)
 
 
@@ -157,3 +159,29 @@ class EntryAdmin(admin.ModelAdmin):
 			obj.user_id = request.user
 
 		super(EntryAdmin, self).save_model(request, obj, form, change)
+
+class AssignAdmin(admin.ModelAdmin):
+
+	fields = ['client_name','created_by','assigned_to']
+	readonly_fields = ('created_by','client_name',)
+
+	list_display = [
+		'client_name',
+		'created_by',
+		'assigned_to'
+	]
+
+	search_fields = ('user_id__username','client_name__client_name')
+
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		dfields = []
+		name = 'assign'
+		form = customized_form(request, form, name, dfields)
+		return form
+
+	def has_add_permission(self, request):
+		return False
+
+	def has_delete_permission(self, request, obj=None):
+		return False

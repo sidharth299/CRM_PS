@@ -80,6 +80,18 @@ class Client(models.Model):
     class Meta:
         verbose_name_plural = 'Clients (Lead Generation)'
 
+class Assign(models.Model):
+    client_name = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
+    created_by  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name = 'creator', verbose_name = "Created By")    
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name = 'assigned', verbose_name = "Assigned To")
+
+    def __str__(self):
+        return str(self.client_name)
+
+    class Meta:
+        verbose_name = 'Client Assignment'
+        verbose_name_plural = 'Client Assignment'
+
 class Person(models.Model):
     name             = models.CharField(max_length = MAX_CONTACT_PERSON, verbose_name = "Contact Person")
     client_name      = models.ForeignKey(Client, on_delete = models.PROTECT)

@@ -16,3 +16,4 @@ admin.site.register(Person, PersonAdmin)
 admin.site.register(Target, TargetAdmin)
 """
 admin.site.register(Entry, EntryAdmin)
+admin.site.register(Assign, AssignAdmin)
