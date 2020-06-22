@@ -9,21 +9,49 @@
 
     <thead class="thead-dark">
       <tr>
-        <th scope="col">METRIC</th>
-        <th scope="col">APR</th>
-        <th scope="col">MAY</th>
-        <th scope="col">JUN</th>
-        <th scope="col">JUL</th>
-        <th scope="col">AUG</th>
-        <th scope="col">SEP</th>
-        <th scope="col">OCT</th>
-        <th scope="col">NOV</th>
-        <th scope="col">DEC</th>
-        <th scope="col">JAN</th>
-        <th scope="col">FEB</th>
-        <th scope="col">MAR</th>
-        <th scope="col">TOTAL</th>
+        <th scope="col", rowspan="2">METRIC</th>
+        <th scope="col", colspan="2">APR</th>
+        <th scope="col", colspan="2">MAY</th>
+        <th scope="col", colspan="2">JUN</th>
+        <th scope="col", colspan="2">JUL</th>
+        <th scope="col", colspan="2">AUG</th>
+        <th scope="col", colspan="2">SEP</th>
+        <th scope="col", colspan="2">OCT</th>
+        <th scope="col", colspan="2">NOV</th>
+        <th scope="col", colspan="2">DEC</th>
+        <th scope="col", colspan="2">JAN</th>
+        <th scope="col", colspan="2">FEB</th>
+        <th scope="col", colspan="2">MAR</th>
+        <th scope="col", colspan="2">TOTAL</th>
 
+      </tr>
+      <tr>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
+        <th>Target</th>
+        <th>Achieved</th>
       </tr>
     </thead>
   
@@ -31,101 +59,141 @@
        
         <tr>
             <td>Total calls</td>
-            {% for i in t_calls %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_total_call %}{% for i in t_calls %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
 
         </tr>
         <tr>
             <td>Average calls</td>
-            {% for i in avg_calls %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_avg_call %}{% for i in avg_calls %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
             
         </tr>
         <tr>
-            <td>No. of Dealer Appointments</td>
-            {% for i in d_appointment %}
-                <td>{{i}}</td>
-            {% endfor %}
-            
+            <td>No. Of Dealer Appointments</td>
+            {% for j in target_da %}{% for i in d_appointment %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
         </tr>
         <tr>
             <td>No. of Appreciation Letters</td>
-            {% for i in a_letter %}
-                <td>{{i}}</td>
-            {% endfor %}
-           
+            {% for j in target_al %}{% for i in a_letter %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
         </tr>
         <tr>
             <td>No. of BIG customers obtained</td>
-            {% for i in big %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_big %}{% for i in big %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
             
         </tr>
         <tr>
             <td>No. of Leads converted to Customers (rank 6)</td>
-            {% for i in conv %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_conv %}{% for i in conv %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
            
         </tr>
         <tr>
             <td>No. of Reference Sales</td>
-            {% for i in ref %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_ref %}{% for i in ref %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
            
         </tr>
         <tr>
             <td>No. of Cross Sales</td>
-            {% for i in cross %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_cross %}{% for i in cross %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
            
         </tr>
         <tr>
             <td>HIT RATIO</td>
-            {% for i in hit_ratio %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_hit %}{% for i in hit_ratio %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
             
            
         </tr>
         <tr>
             <td>No. of rank 6-7 conversions:</td>
-            {% for i in repeat %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_repeat %}{% for i in repeat %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
           
         </tr>
         <tr>
             <td>Total Sales:</td>
-            {% for i in sales %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_sale %}{% for i in sales %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
             
         </tr>
         <tr>
             <td>Total Collection (Payment Received):</td>
-            {% for i in payment %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_pay %}{% for i in payment %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
            
         </tr>
         <tr>
             <td>No. of invoices generated:</td>
-            {% for i in invoices %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_invoice %}{% for i in invoices %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
             
         </tr>
         <tr>
             <td>ATS:</td>
-            {% for i in ats %}
-                <td>{{i}}</td>
-            {% endfor %}
+            {% for j in target_ats %}{% for i in ats %}
+                {% if forloop.counter == forloop.parentloop.counter %}
+                    <td>{{j}}</td>
+                    <td>{{i}}</td>
+                {% endif %}
+            {% endfor %}{% endfor %}
            
         </tr>
     

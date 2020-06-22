@@ -515,6 +515,92 @@ def strategic_report(request):
 			for i in range(12):
 				d_appointment[12]+=d_appointment[i]
 
+			target_da=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_al=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_big=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_conv=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_ref=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_cross=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_repeat=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_sale=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_ats=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_pay=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_hit=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_total_call=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_avg_call=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+			target_invoice=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+
+			for j in range(1,13):
+				if i<10:
+					res = Target.objects.raw('''SELECT id, d_appointment ,appr_letter,big,ref_sale,cross_sale,rank_6_7,MTD_sales,ats,MTD_collection,hit_ratio, strftime('%B',2020-0{1}-01) AS m
+									FROM data_target
+									WHERE user_id_id = '{0}' AND period = m
+									'''.format(user_id, i)
+								)
+				else:
+					res = Target.objects.raw('''SELECT id, d_appointment ,appr_letter,big,ref_sale,cross_sale,rank_6_7,MTD_sales,ats,MTD_collection,hit_ratio, strftime('%B',2020-{1}-01) AS m
+									FROM data_target
+									WHERE user_id_id = '{0}' AND period = m
+									'''.format(user_id, i)
+								)
+				tar_da=0
+				tar_al=0
+				tar_big=0
+				tar_ref=0
+				tar_cross=0
+				tar_repeat=0
+				tar_sale=0
+				tar_ats=0
+				tar_pay=0
+				tar_hit=0
+				for r in res:
+					tar_da=r.d_appointment
+					tar_al=r.appr_letter
+					tar_big=r.big
+					tar_ref=r.ref_sale
+					tar_cross=r.cross_sale
+					tar_repeat=r.rank_6_7
+					tar_sale=r.MTD_sales
+					tar_ats=r.ats
+					tar_pay=r.MTD_collection
+					tar_hit=r.hit_ratio
+				if i<4:
+					target_da[i+8]=tar_da
+					target_al[i+8]=tar_al
+					target_big[i+8]=tar_big
+					target_ref[i+8]=tar_ref
+					target_cross[i+8]=tar_cross
+					target_repeat[i+8]=tar_repeat
+					target_sale[i+8]=tar_sale
+					target_ats[i+8]=tar_ats
+					target_pay[i+8]=tar_pay
+					target_hit[i+8]=tar_hit
+				else:
+					target_da[i-4]
+					target_al[i-4]
+					target_big[i-4]
+					target_ref[i-4]
+					target_cross[i-4]
+					target_repeat[i-4]
+					target_sale[i-4]
+					target_ats[i-4]
+					target_pay[i-4]
+					target_hit[i-4]
+			
+			for j in range(12):
+				target_da[12]+=target_da[i]
+				target_al[12]+=target_al[i]
+				target_big[12]+=target_big[i]
+				target_ref[12]+=target_ref[i]
+				target_cross[12]+=target_cross[i]
+				target_repeat[12]+=target_repeat[i]
+				target_sale[12]+=target_sale[i]
+				target_ats[12]+=target_ats[i]
+				target_pay[12]+=target_pay[i]
+				target_hit[12]+=target_hit[i]
+
+
 
 			a_letter_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
@@ -807,7 +893,7 @@ def strategic_report(request):
 				hit_ratio_list[12]=round((total_call_list[12]/conv_list[12]),2)
 
 
-			payload = {'username':username,'year1':year1,'year2':year2  ,'d_appointment':d_appointment, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'ref':ref_list, 'cross':cross_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
+			payload = {'username':username,'year1':year1,'year2':year2  ,'d_appointment':d_appointment, 'target_da':target_da,'target_al':target_al,'target_big':target_big,'target_invoice':target_invoice,'target_ref':target_ref,'target_cross':target_cross,'target_conv':target_conv,'target_repeat':target_repeat,'target_sale':target_sale,'target_ats':target_ats,'target_pay':target_pay,'target_hit':target_hit,'target_total_call':target_total_call,'target_avg_call':target_avg_call, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'ref':ref_list, 'cross':cross_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
 			return render(request,'report/strategic_report.html',payload)
 		else:
 			payload['form'] = StrategicReport()
