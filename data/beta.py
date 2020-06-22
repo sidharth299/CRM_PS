@@ -53,6 +53,12 @@ class ClientAdmin(admin.ModelAdmin):
 		'zone',
 	]
 
+	def get_queryset(self, request):
+		qs = super(ClientAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(assign__assigned_to = request.user)
+		return qs
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
@@ -91,6 +97,12 @@ class SampleAdmin(admin.ModelAdmin):
 		'sample_status',
 		'sent_date',
 	]
+
+	def get_queryset(self, request):
+		qs = super(SampleAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(client_name__in = (Client.objects.filter(assign__assigned_to = request.user).all()))
+		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
@@ -135,6 +147,13 @@ class TargetAdmin(admin.ModelAdmin):
 class EntryAdmin(admin.ModelAdmin):
 
 	readonly_fields = ('user_id',)
+	raw_id_fields = ('client_name',)
+
+	def get_queryset(self, request):
+		qs = super(EntryAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(user_id = request.user)
+		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)

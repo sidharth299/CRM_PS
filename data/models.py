@@ -81,7 +81,7 @@ class Client(models.Model):
         verbose_name_plural = 'Clients (Lead Generation)'
 
 class Assign(models.Model):
-    client_name = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
+    client_name = models.ForeignKey(Client, on_delete = models.CASCADE, verbose_name = "Client Name")
     created_by  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name = 'creator', verbose_name = "Created By")    
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name = 'assigned', verbose_name = "Assigned To")
 
@@ -94,7 +94,7 @@ class Assign(models.Model):
 
 class Person(models.Model):
     name             = models.CharField(max_length = MAX_CONTACT_PERSON, verbose_name = "Contact Person")
-    client_name      = models.ForeignKey(Client, on_delete = models.PROTECT)
+    client_name      = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
     telephone_main   = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone")
     telephone_extra  = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone (Extra)")
     email            = models.EmailField(blank = True, verbose_name = "Email")
@@ -105,7 +105,7 @@ class Person(models.Model):
 
     class Meta:
         verbose_name = 'contact person'
-        verbose_name_plural = 'Contact Person Details'
+        verbose_name_plural = 'Client Contact Details'
 
 class Dsr(models.Model):
 
@@ -142,7 +142,7 @@ class Sample(models.Model):
     client_name     = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
     sent_date       = models.DateField(default = timezone.now, verbose_name = "Sent Date")
     city            = models.CharField(blank = True, max_length = MAX_CITY, verbose_name = "City")
-    product_name    = models.ForeignKey(Product, blank = True, null = True, on_delete = models.PROTECT, verbose_name = "Product Name")
+    product_name    = models.ForeignKey(Product, on_delete = models.PROTECT, verbose_name = "Product Name")
     sample_quantity = models.PositiveIntegerField(verbose_name = "Quantity")
     sample_status   = models.CharField(choices = CHOICES_SAMPLE_STATUS, max_length = MAX_SAMPLE_STATUS, verbose_name = "Sample Status")
     remarks         = models.CharField(blank = True, max_length = MAX_REMARKS, verbose_name = "Remarks")

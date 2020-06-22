@@ -7,11 +7,19 @@
 <script type="text/javascript">
 
 document.addEventListener('DOMContentLoaded', function () {
+
     var hash = document.getElementById('id_password');
     hash.innerHTML = 'Raw passwords are not stored, so there is no way to see this user\'s password, but you can change\ the password using <a href="../password/">this form</a>.';
 
     var help_message = document.querySelector('div.form-row.field-password > div > div.help');
     help_message.innerHTML = '';
+
+    var staff = document.getElementsByClassName('field-is_staff');
+    staff[0].checked = true;
+    staff[0].style.display = 'none';
+
+    var admin = document.querySelector('div.form-row.field-is_superuser > div > label');
+    admin.innerHTML = 'Admininstrator';
 });
 </script>
 

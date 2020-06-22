@@ -19,6 +19,12 @@ class DsrAdmin(admin.ModelAdmin):
 		(None, {'fields': ['created_by']})
 	]
 
+	def get_queryset(self, request):
+		qs = super(DsrAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(client_name__in = (Client.objects.filter(assign__assigned_to = request.user).all()))
+		return qs
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
@@ -60,6 +66,12 @@ class SaleAdmin(admin.ModelAdmin):
 	inlines = [BillInline]
 
 	list_display = ['invoice_number', 'client_name', 'total_amount', 'sale_date']
+
+	def get_queryset(self, request):
+		qs = super(SaleAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(client_name__in = (Client.objects.filter(assign__assigned_to = request.user).all()))
+		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
@@ -231,6 +243,12 @@ class PaymentAdmin(admin.ModelAdmin):
 	list_filter = [('date', DateFieldListFilter)]
 	search_fields = ('invoice_number__invoice_number',)
 
+	def get_queryset(self, request):
+		qs = super(PaymentAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(invoice_number__in = (Sale.objects.filter(client_name__in = Client.objects.filter(assign__assigned_to = request.user)).all()))
+		return qs
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = ['invoice_number']
@@ -310,6 +328,12 @@ class PersonAdmin(admin.ModelAdmin):
 		(None, {'fields': ['name', 'client_name']}),
 		('Contact Details', {'fields': ['telephone_main','telephone_extra','email','remarks']})
 	]
+
+	def get_queryset(self, request):
+		qs = super(DsrAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(client_name__in = (Client.objects.filter(assign__assigned_to = request.user).all()))
+		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
