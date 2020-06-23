@@ -57,7 +57,7 @@
   
     <tbody>
        
-        <tr>
+      <!--  <tr>
             <td>Total calls</td>
             {% for j in target_total_call %}{% for i in t_calls %}
                 {% if forloop.counter == forloop.parentloop.counter %}
@@ -66,9 +66,9 @@
                 {% endif %}
             {% endfor %}{% endfor %}
 
-        </tr>
+        </tr>-->
         <tr>
-            <td>Average calls</td>
+            <td>MNOC</td>
             {% for j in target_avg_call %}{% for i in avg_calls %}
                 {% if forloop.counter == forloop.parentloop.counter %}
                     <td>{{j}}</td>
@@ -176,7 +176,7 @@
             {% endfor %}{% endfor %}
            
         </tr>
-        <tr>
+      <!--  <tr>
             <td>No. of invoices generated:</td>
             {% for j in target_invoice %}{% for i in invoices %}
                 {% if forloop.counter == forloop.parentloop.counter %}
@@ -185,7 +185,7 @@
                 {% endif %}
             {% endfor %}{% endfor %}
             
-        </tr>
+        </tr>-->
         <tr>
             <td>ATS:</td>
             {% for j in target_ats %}{% for i in ats %}
