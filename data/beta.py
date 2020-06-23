@@ -132,12 +132,20 @@ class TargetAdmin(admin.ModelAdmin):
 		('MTD', {'fields': ['MTD_sales', 'MTD_collection',]} ),
 	]
 
+	def get_queryset(self, request):
+		qs = super(TargetAdmin, self).get_queryset(request)
+		if not request.user.is_superuser:
+			return qs.filter(user_id = request.user)
+		return qs
+
 	def get_form(self, request, obj=None, **kwargs):
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
 		name = 'target'
 		form = customized_form(request,form,name, dfields)
 		return form
+
+	search_fields = ('user_id__username','period')
 
 	list_display = [
 		'user_id',

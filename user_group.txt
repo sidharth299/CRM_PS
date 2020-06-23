@@ -31,3 +31,5 @@ data | sale | Can view sale
 data | sample | Can add sample
 data | sample | Can change sample
 data | sample | Can view sample
+
+data | target | Can view target

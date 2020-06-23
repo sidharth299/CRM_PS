@@ -193,8 +193,8 @@ class Bill(models.Model):
         return str(self.product_name)+' : '+str(self.quantity)
 
     class Meta:
-        verbose_name = 'product'
-        verbose_name_plural = 'Products'
+        verbose_name = 'sale product'
+        verbose_name_plural = 'sale products'
 
 class Payment(models.Model):
     invoice_number  = models.ForeignKey(Sale, on_delete = models.CASCADE, verbose_name = "Invoice Number")
