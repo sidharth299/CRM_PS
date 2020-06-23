@@ -95,9 +95,9 @@ class Assign(models.Model):
 class Person(models.Model):
     name             = models.CharField(max_length = MAX_CONTACT_PERSON, verbose_name = "Contact Person")
     client_name      = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
-    telephone_main   = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone")
+    telephone_main   = models.CharField(max_length = 15, verbose_name = "Telephone")
     telephone_extra  = models.CharField(blank = True, max_length = 15, verbose_name = "Telephone (Extra)")
-    email            = models.EmailField(blank = True, verbose_name = "Email")
+    email            = models.EmailField(verbose_name = "Email")
     remarks          = models.CharField(blank = True, max_length = MAX_REMARKS,verbose_name = "Remarks")
 
     def __str__(self):

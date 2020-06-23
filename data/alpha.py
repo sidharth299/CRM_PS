@@ -330,7 +330,7 @@ class PersonAdmin(admin.ModelAdmin):
 	]
 
 	def get_queryset(self, request):
-		qs = super(DsrAdmin, self).get_queryset(request)
+		qs = super(PersonAdmin, self).get_queryset(request)
 		if not request.user.is_superuser:
 			return qs.filter(client_name__in = (Client.objects.filter(assign__assigned_to = request.user).all()))
 		return qs

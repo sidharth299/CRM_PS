@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var temp = document.getElementById('id_client_name');
     var value = temp.getAttribute('value');
     var is_disabled = temp.disabled;
+    //temp = document.querySelector('div.form-row.field-contact_person > div');
+    //temp.innerHTML += '<span><button type="button" id="fetch-contact-person-detail">fetch details</button></span>'
+
+    document.querySelector('div.form-row.field-contact_person > div').addEventListener('click', function() {
+            get_contact_person_detail();
+    });
 
     if (!is_disabled){
     if (value != null) {
@@ -36,12 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    else changeToDropdown();
+    else 
+        changeToDropdown();
     }
 
     function changeToDropdown() {
-        
-        temp = document.getElementById("id_contact_person");
+        temp = document.getElementById('id_contact_person');
         var bazinga = temp.getAttribute('value');
         temp.remove();
         var html = '<div class="related-widget-wrapper">\
@@ -84,6 +90,19 @@ document.addEventListener('DOMContentLoaded', function () {
             var response = JSON.parse(request.responseText);
             callback(response);
         };
+    }
+
+    function get_contact_person_detail() {
+        temp = document.getElementById('id_contact_person');
+        var contact_person = temp.options[temp.selectedIndex].value;
+        var url = "/data/get_contact_person_detail/" + contact_person;
+        
+        send_request('GET', url, '', callback);
+
+        function callback(response) {
+            document.getElementById('id_telephone').setAttribute('value',response['telephone']);
+            document.getElementById('id_email').setAttribute('value',response['email']);
+        }
     }
 
     window.ORIGINAL_dismissRelatedLookupPopup = window.dismissRelatedLookupPopup
