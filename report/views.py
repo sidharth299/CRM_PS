@@ -85,6 +85,7 @@ def sample_report(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -101,6 +102,18 @@ def sample_report(request):
 									WHERE created_by_id = '{0}' AND (sent_date BETWEEN '{1}' AND '{2}') group by sample_status
 									'''.format(user_id,first_date,last_date)
 								)
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="SampleReport.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['Sent Date','Client Name','City','Product Name', 'Quantity', 'Status', 'Remarks' ])
+				for r in res:
+					writer.writerow([r.sent_date,r.client, r.city,  r.product, r.sample_quantity, r.sample_status, r.remarks ])
+				return response
+
 
 			payload = {'report':res,'report2':res2,'username':username}
 			return render(request,'report/sample_report.html',payload)
