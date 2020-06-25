@@ -41,6 +41,8 @@ class IndustrySales(forms.Form):
 	end_date   = forms.DateField(
 								widget=forms.widgets.DateInput(attrs={'type': 'date'}),
 								required = True)
+	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
+
 class ItemSales(forms.Form):
 	username = forms.ModelChoiceField(
 									queryset=User.objects.all().order_by('username'),

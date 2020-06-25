@@ -178,6 +178,7 @@ def industry_sales(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -197,6 +198,19 @@ def industry_sales(request):
 									GROUP BY client_category ORDER BY SUM(total_amount)
 									'''.format(user_id,first_date,last_date)
 								)
+			
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="IndustrySales.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['Industry Type','Client name','Sum' ])
+				for r in res:
+					writer.writerow([r.client_category, r.client_name , r.total])
+				return response
+			
+			
 			payload = {'report':res,'report2':res2,'username':username}
 			return render(request,'report/industry_sales.html',payload)
 		else:
