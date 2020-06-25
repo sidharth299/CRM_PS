@@ -954,46 +954,16 @@ def strategic_report(request):
 
 				csv_mnoc=['MNOC']
 				csv_dappt=['Dealer Appointments']
-				
 				csv_aletter=["Appreciation Letter"]
-				for i in a_letter_list:
-					csv_aletter.append(i)
-
 				csv_big=["Big"]
-				for i in big_list:
-					csv_big.append(i)
-				
 				csv_conv=["Converted"]
-				for i in conv_list:
-					csv_conv.append(i)
-
 				csv_ref=["Reference"]
-				for i in ref_list:
-					csv_ref.append(i)
-
 				csv_cross=["Cross"]
-				for i in cross_list:
-					csv_cross.append(i)
-
 				csv_hit=["HIT ratio"]
-				for i in hit_ratio_list:
-					csv_hit.append(i)
-
 				csv_repeat=["Repeat"]
-				for i in repeat_list:
-					csv_repeat.append(i)
-
 				csv_sale=["Sales"]
-				for i in sale_list:
-					csv_sale.append(i)
-
 				csv_payment=["Collection"]
-				for i in payment_list:
-					csv_payment.append(i)
-
 				csv_ats=["ATS"]
-				for i in ats_list:
-					csv_ats.append(i)
 
 				for i in range(13):
 					csv_mnoc.append(target_avg_call[i])
@@ -1002,17 +972,40 @@ def strategic_report(request):
 					csv_dappt.append(target_da[i])
 					csv_dappt.append(d_appointment[i])
 
-					csv_aletter.append()
-					csv_aletter.append()
+					csv_aletter.append(target_al[i])
+					csv_aletter.append(a_letter_list[i])
 
-					csv_big.append()
-					csv_big.append()
+					csv_big.append(target_big[i])
+					csv_big.append(big_list[i])
 
-					
+					csv_conv.append(target_conv[i])
+					csv_conv.append(conv_list[i])
+
+					csv_ref.append(target_ref[i])
+					csv_ref.append(ref_list[i])
+
+					csv_cross.append(target_cross[i])
+					csv_cross.append(cross_list[i])
+
+					csv_hit.append(target_hit[i])
+					csv_hit.append(hit_ratio_list[i])
+
+					csv_repeat.append(target_repeat[i])
+					csv_repeat.append(repeat_list[i])
+
+					csv_sale.append(target_sale[i])
+					csv_sale.append(sale_list[i])
+
+					csv_payment.append(target_pay[i])
+					csv_payment.append(payment_list[i])
+
+					csv_ats.append(target_ats[i])
+					csv_ats.append(ats_list[i])
 					
 
 
 				# adding headres
+				writer.writerow(["Strategic Report"])
 				writer.writerow(['Metric','April','','May','','June','','July','','August','','September','','October','' ,'November','', 'December','', 'January','','February','','March','', 'Total','' ])
 				writer.writerow(['','T','A','T','A','T','A','T','A','T','A','T','A','T','A' ,'T','A', 'T','A', 'T','A','T','A','T','A', 'T','A' ])
 				writer.writerow(csv_mnoc)
