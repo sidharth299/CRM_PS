@@ -29,6 +29,7 @@ class SampleReport(forms.Form):
 
 class RankRegister(forms.Form):
 	rank= forms.IntegerField(max_value=7, min_value=1)
+	is_csv     = forms.BooleanField(help_text='Download the report as CSV', required=False)
 
 class IndustrySales(forms.Form):
 	username = forms.ModelChoiceField(

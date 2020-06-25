@@ -134,6 +134,7 @@ def rank_register(request):
 		form = RankRegister(request.POST)
 		if form.is_valid():
 			rank=form.cleaned_data['rank']
+			is_csv = form.cleaned_data['is_csv']
 
 			res = Client.objects.raw('''SELECT  client_name, client_category, city , telephone_main, client_rank from data_client where
 										client_rank='{0}' order by client_name
@@ -144,6 +145,18 @@ def rank_register(request):
 										client_rank='{0}' order by client_name
 									'''.format(rank,)
 								)
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="RankRegister.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['Name','Category','City','Phone', 'Rank' ])
+				for r in res:
+					writer.writerow([r.client_name ,r.client_category, r.city,  r.telephone_main , r.client_rank ])
+				return response
+
 
 			payload = {'report':res, 'report2':res2 ,'rank':rank}
 			return render(request,'report/rank_register.html',payload)
