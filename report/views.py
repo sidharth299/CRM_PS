@@ -538,6 +538,7 @@ def strategic_report(request):
 		if form.is_valid():
 			username = form.cleaned_data['username']
 			year1 = form.cleaned_data['year']
+			is_csv = form.cleaned_data['is_csv']
 			year2=year1+1
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -945,7 +946,89 @@ def strategic_report(request):
 			if conv_list[12]!=0:
 				hit_ratio_list[12]=round((total_call_list[12]/conv_list[12]),2)
 
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="StrategicReport.csv"'
 
+				writer = csv.writer(response)
+
+				csv_mnoc=['MNOC']
+				csv_dappt=['Dealer Appointments']
+				
+				csv_aletter=["Appreciation Letter"]
+				for i in a_letter_list:
+					csv_aletter.append(i)
+
+				csv_big=["Big"]
+				for i in big_list:
+					csv_big.append(i)
+				
+				csv_conv=["Converted"]
+				for i in conv_list:
+					csv_conv.append(i)
+
+				csv_ref=["Reference"]
+				for i in ref_list:
+					csv_ref.append(i)
+
+				csv_cross=["Cross"]
+				for i in cross_list:
+					csv_cross.append(i)
+
+				csv_hit=["HIT ratio"]
+				for i in hit_ratio_list:
+					csv_hit.append(i)
+
+				csv_repeat=["Repeat"]
+				for i in repeat_list:
+					csv_repeat.append(i)
+
+				csv_sale=["Sales"]
+				for i in sale_list:
+					csv_sale.append(i)
+
+				csv_payment=["Collection"]
+				for i in payment_list:
+					csv_payment.append(i)
+
+				csv_ats=["ATS"]
+				for i in ats_list:
+					csv_ats.append(i)
+
+				for i in range(13):
+					csv_mnoc.append(target_avg_call[i])
+					csv_mnoc.append(avg_call_list[i])
+
+					csv_dappt.append(target_da[i])
+					csv_dappt.append(d_appointment[i])
+
+					csv_aletter.append()
+					csv_aletter.append()
+
+					csv_big.append()
+					csv_big.append()
+
+					
+					
+
+
+				# adding headres
+				writer.writerow(['Metric','April','','May','','June','','July','','August','','September','','October','' ,'November','', 'December','', 'January','','February','','March','', 'Total','' ])
+				writer.writerow(['','T','A','T','A','T','A','T','A','T','A','T','A','T','A' ,'T','A', 'T','A', 'T','A','T','A','T','A', 'T','A' ])
+				writer.writerow(csv_mnoc)
+				writer.writerow(csv_dappt)
+				writer.writerow(csv_aletter)
+				writer.writerow(csv_big)
+				writer.writerow(csv_conv)
+				writer.writerow(csv_ref)
+				writer.writerow(csv_cross)
+				writer.writerow(csv_hit)
+				writer.writerow(csv_repeat)
+				writer.writerow(csv_sale)
+				writer.writerow(csv_payment)
+				writer.writerow(csv_ats)
+
+				return response
 
 			payload = {'username':username,'year1':year1,'year2':year2  ,'d_appointment':d_appointment, 'target_da':target_da,'target_al':target_al,'target_big':target_big,'target_invoice':target_invoice,'target_ref':target_ref,'target_cross':target_cross,'target_conv':target_conv,'target_repeat':target_repeat,'target_sale':target_sale,'target_ats':target_ats,'target_pay':target_pay,'target_hit':target_hit,'target_total_call':target_total_call,'target_avg_call':target_avg_call, 'a_letter':a_letter_list, 'big':big_list, 'conv':conv_list, 'ref':ref_list, 'cross':cross_list, 'repeat':repeat_list, 'sales':sale_list, 'invoices':invoices_list, 'ats':ats_list, 'payment':payment_list, 't_calls':total_call_list, 'avg_calls':avg_call_list, 'hit_ratio': hit_ratio_list}
 			return render(request,'report/strategic_report.html',payload)
