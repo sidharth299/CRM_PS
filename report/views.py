@@ -234,6 +234,8 @@ def item_sales(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
+
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -243,6 +245,17 @@ def item_sales(request):
 									WHERE data_sale.created_by_id = '{0}' AND (data_sale.sale_date BETWEEN '{1}' AND '{2}') group by data_bill.product_name_id order by t desc
 									'''.format(user_id,first_date,last_date)
 								)
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="ItemSales.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['Product','Quantity','Amount' ])
+				for r in res:
+					writer.writerow([r.p, r.q , r.t])
+				return response
 
 			payload = {'report':res, 'username':username, 'firstdate':first_date, 'lastdate':last_date}
 			return render(request,'report/item_sales.html',payload)
