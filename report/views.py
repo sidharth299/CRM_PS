@@ -532,7 +532,7 @@ def strategic_report(request):
 
 
 
-			res = Target.objects.raw('''SELECT id, d_appointment ,appr_letter,big,ref_sale,cross_sale,rank_6_7,MTD_sales,ats,MTD_collection,hit_ratio
+			res = Target.objects.raw('''SELECT id, d_appointment ,appr_letter,big,ref_sale,cross_sale,rank_6_7,MTD_sales,ats,MTD_collection,hit_ratio, mnoc, lead_gen
 									FROM data_target
 									WHERE user_id_id = '{0}'
 									'''.format(user_id,)
@@ -551,6 +551,8 @@ def strategic_report(request):
 			tar_ats=0
 			tar_pay=0
 			tar_hit=0
+			tar_mnoc=0
+			tar_conv=0
 			i=0
 			for r in res:
 				tar_da=r.d_appointment
@@ -563,6 +565,8 @@ def strategic_report(request):
 				tar_ats=r.ats
 				tar_pay=r.MTD_collection
 				tar_hit=r.hit_ratio
+				tar_mnoc=r.mnoc
+				tar_conv=r.lead_gen
 			
 				target_da[i]=tar_da
 				target_al[i]=tar_al
@@ -574,6 +578,8 @@ def strategic_report(request):
 				target_ats[i]=tar_ats
 				target_pay[i]=tar_pay
 				target_hit[i]=tar_hit
+				target_conv[i]=tar_conv
+				target_avg_call[i]=tar_mnoc
 
 				i=i+1
 
@@ -589,9 +595,12 @@ def strategic_report(request):
 				target_ats[12]+=target_ats[i]
 				target_pay[12]+=target_pay[i]
 				target_hit[12]+=target_hit[i]
+				target_conv[12]+=target_conv[i]
+				target_avg_call[12]+=target_avg_call[i]
 
 			target_hit[12]=round((target_hit[12]/12),2)
 			target_ats[12]=round((target_ats[12]/12),2)
+			target_avg_call[12]=round((target_avg_call[12]/12),2)
 
 			a_letter_list=[0,0,0,0,0,0,0,0,0,0,0,0,0]
 
