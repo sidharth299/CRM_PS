@@ -557,7 +557,7 @@ def perf_report(request):
 
 			if is_csv:
 				response = HttpResponse(content_type='text/csv')
-				response['Content-Disposition'] = 'attachment; filename="StrategicReport.csv"'
+				response['Content-Disposition'] = 'attachment; filename="PerformanceReport.csv"'
 
 				writer = csv.writer(response)
 				csv_calls=['Total Calls']
