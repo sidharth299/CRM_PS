@@ -278,6 +278,7 @@ def outstanding_report(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -296,6 +297,17 @@ def outstanding_report(request):
 									WHERE created_by_id = '{0}' AND (sale_date BETWEEN '{1}' AND '{2}') AND (total_amount-amount_paid)>0 group by client_name_id order by client_name_id
 									'''.format(user_id,first_date,last_date, )
 								)
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="OutstandingReport.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['INVOICE','CLIENT NAME','DATE','OUTSTANDING DAYS','REMAINING PAYMENT' ])
+				for r in res2:
+					writer.writerow([r.id, r.client_name_id , r.sale_date, r.diff,r.b])
+				return response
 
 
 			payload = {'report':res2,'report2':res3 , 'username':username, 'firstdate':first_date, 'lastdate':last_date,}
@@ -319,6 +331,7 @@ def payment_register(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -340,6 +353,17 @@ def payment_register(request):
 
 			for r in res3:
 				tot=tot+r.b
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="PaymentRegister.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['INVOICE','CLIENT NAME','SALE DATE','PAYMENT DATE','DAYS TO PAYMENT','PAYMENT RECEIVED' ])
+				for r in res2:
+					writer.writerow([r.invoice_number_id, r.client_name_id , r.sale_date,r.date, r.diff,r.b])
+				return response
 
 
 			payload = {'report':res2 ,'report2':res3 ,'username':username, 'firstdate':first_date, 'lastdate':last_date,'total':tot}
@@ -364,6 +388,7 @@ def daily_sales(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -373,6 +398,17 @@ def daily_sales(request):
 									WHERE data_dsr.created_by_id = '{0}' AND (data_dsr.date_of_contact BETWEEN '{1}' AND '{2}')
 									'''.format(user_id,first_date,last_date)
 								)
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="PaymentRegister.csv"'
+
+				writer = csv.writer(response)
+				# adding headres
+				writer.writerow(['NAME','CONTACT PERSON','PHONE','RANK','CONTACT MODE','DATE OF CONTACT','ACTION','PRODUCT NAME','NEXT CALL DATE' ])
+				for r in res:
+					writer.writerow([r.client_name_id ,r.contact_person,r.telephone,r.client_rank,r.contact_mode,r.date_of_contact,r.action,r.product_name_id,r.next_call_date])
+				return response
 
 			payload = {'report':res, 'username':username, 'firstdate':first_date, 'lastdate':last_date}
 			return render(request,'report/daily_sales.html',payload)
@@ -396,6 +432,7 @@ def perf_report(request):
 			username = form.cleaned_data['username']
 			first_date = form.cleaned_data['start_date']
 			last_date = form.cleaned_data['end_date']
+			is_csv = form.cleaned_data['is_csv']
 
 			user_id = (User.objects.filter(username=username).first()).id
 
@@ -517,6 +554,57 @@ def perf_report(request):
 
 			if num_invoice!=0:
 				ats=round((s_tot/num_invoice),2)
+
+			if is_csv:
+				response = HttpResponse(content_type='text/csv')
+				response['Content-Disposition'] = 'attachment; filename="StrategicReport.csv"'
+
+				writer = csv.writer(response)
+				csv_calls=['Total Calls']
+				csv_mnoc=['MNOC']
+				csv_dappt=['Dealer Appointments']
+				csv_aletter=["Appreciation Letter"]
+				csv_big=["Big"]
+				csv_conv=["Converted"]
+				csv_hit=["HIT ratio"]
+				csv_repeat=["Repeat"]
+				csv_sale=["Sales"]
+				csv_payment=["Collection"]
+				csv_invoice=["No. of invoices generated"]
+				csv_ats=["ATS"]
+
+				csv_calls.append(calls)
+				csv_mnoc.append(avg_calls)
+				csv_dappt.append(d_app)
+				csv_aletter.append(a_letter)
+				csv_big.append(big)
+				csv_conv.append(conv)
+				csv_hit.append(hit_ratio)
+				csv_repeat.append(repeat)
+				csv_sale.append(s_tot)
+				csv_payment.append(p_tot)
+				csv_invoice.append(num_invoice)	
+				csv_ats.append(ats)
+					
+
+
+				# adding headres
+				writer.writerow(["Performance Report"])
+				writer.writerow(['Metric','Achieved' ])
+				writer.writerow(csv_calls)
+				writer.writerow(csv_mnoc)
+				writer.writerow(csv_dappt)
+				writer.writerow(csv_aletter)
+				writer.writerow(csv_big)
+				writer.writerow(csv_conv)
+				writer.writerow(csv_hit)
+				writer.writerow(csv_repeat)
+				writer.writerow(csv_sale)
+				writer.writerow(csv_payment)
+				writer.writerow(csv_invoice)
+				writer.writerow(csv_ats)
+
+				return response
 
 			payload = {'username':username, 'firstdate':first_date, 'lastdate':last_date, 'calls':calls,'avg_calls':avg_calls ,'d_app':d_app, 'a_letter':a_letter, 'big':big, 'conv':conv, 'hit_ratio':hit_ratio, 'repeat':repeat, 'p_total':p_tot, 's_total':s_tot, 'num_invoice':num_invoice, 'ats':ats}
 			return render(request,'report/perf_report.html',payload)
