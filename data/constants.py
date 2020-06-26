@@ -1,3 +1,6 @@
+from django.contrib.sessions.backends.db import SessionStore
+user_session = SessionStore()
+
 ## max values for NEW last two models ##
 
 MAX_PERIOD = 10

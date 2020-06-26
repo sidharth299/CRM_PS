@@ -3,10 +3,12 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
-
 from datetime import datetime
 
+from django.contrib.sessions.backends.db import SessionStore
+
 from .constants import *
+from .dbconf import *
 
 def get_financial_year():
     temp = datetime.now()
@@ -122,20 +124,29 @@ class Dsr(models.Model):
     client_rank     = models.PositiveSmallIntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(7)], verbose_name = "Client Rank")
     failed_sale     = models.BooleanField(default = False, verbose_name = "Failed Sale")
     successful_sale = models.BooleanField(default = False, verbose_name = "Successful Sale")
-    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By")
-
+    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By", related_name = 'created_by')
     def __str__(self):
-        return str(self.client_name) + ' : ' + self.action
+        try:
+            return str(self.client_name) + ' : ' + self.updated_by
+        except:
+            return str(self.client_name) + ' : ' + self.action
 
     class Meta:
         verbose_name = 'daily sales report'
         verbose_name_plural = 'Daily Sales Reports'
-
+    
     def clean(self):
+        res = validate_date(self.date_of_contact)
+        if res:
+           raise ValidationError(res)
+        if self.date_of_contact > self.next_call_date:
+           raise ValidationError('Next call date should be after date of contact')
+
         if self.client_rank in [1,2,3,4,5] and self.successful_sale == True:
             raise ValidationError('A sale with Rank - '+str(self.client_rank)+' can not be a successful sale')
         if self.client_rank in [6,7] and self.failed_sale == True:
             raise ValidationError('A sale with Rank - '+str(self.client_rank)+' can not be failed sale')
+        
 
 class Sample(models.Model):
 
@@ -153,6 +164,11 @@ class Sample(models.Model):
 
     class Meta:
         verbose_name_plural = 'Samples Sent'
+
+    def clean(self):
+        res = validate_date(self.sent_date, self.updated_by)
+        if res:
+            raise ValidationError(res)
 
 # only Admin/Accountants
 class Sale(models.Model):
@@ -181,6 +197,11 @@ class Sale(models.Model):
         verbose_name = 'sales invoice'
         verbose_name_plural = 'Sales Invoices'
 
+    def clean(self):
+        res = validate_date(self.sale_date, self.updated_by)
+        if res:
+            raise ValidationError(res)
+
 # not to be displayed to anyone
 class Bill(models.Model):
 
@@ -208,6 +229,11 @@ class Payment(models.Model):
     class Meta:
         verbose_name = 'payment'
         verbose_name_plural = 'Payments Register'
+
+    def clean(self):
+        res = validate_date(self.date, self.updated_by)
+        if res:
+            raise ValidationError(res)
 
 class Target(models.Model):
     user_id           = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name ="Username")
@@ -244,3 +270,8 @@ class Entry(models.Model):
 
     def __str__(self):
         return str(self.entry_type)
+
+    def clean(self):
+        res = validate_date(self.entry_date, self.updated_by)
+        if res:
+            raise ValidationError(res)

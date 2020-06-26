@@ -4,10 +4,8 @@ from .dbconf import *
 from .filters import *
 
 class DsrAdmin(admin.ModelAdmin):
-
 	raw_id_fields = ('product_name','client_name')
 	readonly_fields = ('created_by',)
-
 	list_display = ['client_name', 'date_of_contact', 'action', 'next_call_date',]
 	search_fields = ['client_name__client_name',]
 	list_filter = ['contact_mode', 'client_rank', 'sample_status', ('date_of_contact', DateFieldListFilter) ]
@@ -26,13 +24,18 @@ class DsrAdmin(admin.ModelAdmin):
 		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
-		form = super().get_form(request, obj, **kwargs)
+
+		user_session['is_superuser'] = request.user.is_superuser
+		user_session.save()
+		print(user_session['is_superuser'])
+		form = super(DsrAdmin,self).get_form(request, obj, **kwargs)
 		dfields = []
-		name = 'dsr'
+		name = 'dsr'	
 		form = customized_form(request,form,name, dfields)
 		return form
 
 	def save_model(self, request, obj, form, change):
+		
 		if not change:
 			obj.created_by = request.user
 			person = Person.objects.filter(name = obj.contact_person).first()
@@ -54,7 +57,7 @@ class BillInline(admin.TabularInline):
 
 class SaleAdmin(admin.ModelAdmin):
 	raw_id_fields = ('client_name',)
-	readonly_fields = ('invoice_number','amount_paid','first_date','last_date','created_by','sgst','igst','cgst','export_sale','total_amount')
+	readonly_fields = ('created_by','invoice_number','amount_paid','first_date','last_date','sgst','igst','cgst','export_sale','total_amount')
 
 	fieldsets = [
 		('Sale Details', {'fields': ['client_name', 'sale_date', 'invoice_number', 'carting', 'gstin', 'remarks', 'created_by']}),

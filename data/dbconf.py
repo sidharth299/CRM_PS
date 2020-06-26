@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.apps import apps
 from django.forms import TextInput, Textarea
+from datetime import date
 
 from .models import *
 
@@ -58,10 +59,34 @@ def customized_form(request, form, name, dfields):
 		for i in dfields:
 			if i in form.base_fields:
 				form.base_fields[i].disabled = True
-	
+
 	if request.user.has_perm('data.change_'+name):
 		model = apps.get_model('data', name)
 		disable_fields = [field.name for field in model._meta.get_fields()]
 		form = valid_action(request, form, disable_fields)
 
 	return form
+
+def validate_date(date):
+	current_date = date.today()
+	if date > current_date:
+		error_message = 'Please do not enter a future date'
+		return error_message
+	month = current_date.month
+	flag = False
+	if month in [1,2,3]:
+		if date.month in [1,2,3]:
+			if date.year == current_date.year:
+				flag = True
+		else:
+			if date.year == current_date.year-1:
+				flag = True
+	else:
+		if not (date.month in [1,2,3]):
+			if date.year == current_date.year:
+				flag = True
+	if not flag and not user_session['is_superuser']:
+		error_message = 'Please do not enter a date of previous financial year. Contact admininstrator if you want to'
+		return error_message
+
+	return False 

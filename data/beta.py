@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
 
 from .dbconf import *
+from .models import *
 
 class ProductAdmin(admin.ModelAdmin):
 	# formfield_overrides = FORMFIELD_OVERRIDES
@@ -9,8 +10,8 @@ class ProductAdmin(admin.ModelAdmin):
 		(None,			{'fields': ['product_name','product_category','hsn_code']}),
 		('Cost and Tax', {'fields': ['basic_rate','tax_rate','export_tax_rate','remarks','created_by']}),
 		]
-	readonly_fields = ('created_by',)
-	search_fields = ('product_name','hsn_code')
+	readonly_fields = ()
+	search_fields = ('product_name','hsn_code','created_by')
 
 	list_display = [
 		'product_name',
@@ -190,7 +191,7 @@ class EntryAdmin(admin.ModelAdmin):
 class AssignAdmin(admin.ModelAdmin):
 
 	fields = ['client_name','created_by','assigned_to']
-	readonly_fields = ('created_by','client_name',)
+	readonly_fields = ('client_name','created_by')
 
 	list_display = [
 		'client_name',

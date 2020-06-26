@@ -14,9 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var help_message = document.querySelector('div.form-row.field-password > div > div.help');
     help_message.innerHTML = '';
 
-    var staff = document.getElementsByClassName('field-is_staff');
-    staff[0].checked = true;
-    staff[0].style.display = 'none';
+    var staff = document.getElementById('id_is_staff');
+    staff.checked = true;
+    var staff_field = document.getElementsByClassName('field-is_staff');
+    staff_field[0].style.display = 'none';
 
     var admin = document.querySelector('div.form-row.field-is_superuser > div > label');
     admin.innerHTML = 'Admininstrator';
