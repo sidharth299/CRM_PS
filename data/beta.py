@@ -36,12 +36,12 @@ class ProductAdmin(admin.ModelAdmin):
 class ClientAdmin(admin.ModelAdmin):
 
 	fieldsets = [
-		(None, {'fields': ['client_name','client_category','btc','gstin','balance']}),
+		(None, {'fields': ['client_name','client_category','btc','gstin']}),
 		('Contact', {'fields': ['telephone_main','telephone_extra','email']}),
 		('Address',	{'fields' : ['address','city','pin_code','state','country','zone']}),
 		('Lead Details', {'fields' : ['lead_source','client_rank','remarks','created_by']}),
 		]
-	readonly_fields = ('balance','client_rank','created_by')
+	readonly_fields = ('client_rank','created_by')
 
 	search_fields = ('client_name', 'telephone_main')
 

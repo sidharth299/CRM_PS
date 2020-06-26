@@ -39,6 +39,11 @@ def get_invoice_number():
 
     return response
 
+class Param(models.Model):
+    key = models.CharField(max_length = 40, unique = True)
+    num = models.IntegerField(default = 0)
+    alphanum = models.CharField(default = '', blank = True, max_length = 200)
+
 # add/changed by only admin
 class Product(models.Model):
     product_name     = models.CharField(max_length = MAX_PRODUCT_NAME, primary_key=True, verbose_name = "Product Name")
