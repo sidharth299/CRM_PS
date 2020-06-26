@@ -22,11 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (value != null) {
         temp = document.getElementById('id_client_name');
         var chosenId = temp.getAttribute('value');
-        var url = "/data/get_contact_person/" + chosenId;
+        var url = "/data/get_contact_person/";
         temp = document.getElementById('id_contact_person');
         var chosenId = temp.getAttribute('value');
 
-        send_request('GET', url, '', callback);
+        var data = {'data' : chosenId};
+        send_request('POST', url, data , callback);
 
         function callback(response) {
             contact_list = response['contact_list'];
@@ -62,9 +63,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var elem = document.getElementById(name);
 
         if (name == 'id_client_name') {
-            var url = "/data/get_contact_person/" + chosenId;
-            
-            send_request('GET', url, '', callback);
+            var url = "/data/get_contact_person/";
+            data = {'data' : chosenId}
+            send_request('POST', url, data , callback);
 
             function callback(response) {
                 contact_list = response['contact_list'];
@@ -95,9 +96,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function get_contact_person_detail() {
         temp = document.getElementById('id_contact_person');
         var contact_person = temp.options[temp.selectedIndex].value;
-        var url = "/data/get_contact_person_detail/" + contact_person;
+        var url = "/data/get_contact_person_detail/";
+        var data = {'data' : contact_person};
         
-        send_request('GET', url, '', callback);
+        send_request('POST', url, data, callback);
 
         function callback(response) {
             document.getElementById('id_telephone').setAttribute('value',response['telephone']);

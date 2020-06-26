@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var elem = document.getElementById(name);
 
         if (name == 'id_client_name') {
-            var url = "/data/get_city/" + chosenId;
-            
-            send_request('GET', url, '', callback);
+            var url = "/data/get_city/";
+            var data = {'data' : chosenId};
+            send_request('POST', url, data, callback);
 
             function callback(response) {
                 document.getElementById('id_city').setAttribute('value', response['city']);

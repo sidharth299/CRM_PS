@@ -2,12 +2,16 @@ import json
 
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 from data.models import Person, Client, Product
 
+@csrf_exempt
 @login_required(login_url='/login/')
-def get_contact_person(request, name):
-	
+def get_contact_person(request):
+	payload = json.loads(request.body)
+	name = payload['data']
+
 	temp = Person.objects.filter(client_name = name).all()
 	contact_list = []
 	for i in temp:
@@ -18,9 +22,12 @@ def get_contact_person(request, name):
 	json_data = json.dumps(data)
 	return HttpResponse(json_data, content_type="application/json")
 
+@csrf_exempt
 @login_required(login_url='/login/')
-def get_contact_person_detail(request, name):
-	
+def get_contact_person_detail(request):
+	payload = json.loads(request.body)
+	name = payload['data']
+
 	temp = Person.objects.filter(name = name).first()
 	data ={}
 	data['email'] = temp.email
@@ -29,8 +36,11 @@ def get_contact_person_detail(request, name):
 	json_data = json.dumps(data)
 	return HttpResponse(json_data, content_type="application/json")
 
+@csrf_exempt
 @login_required(login_url='/login/')
-def get_gstin(request, name):
+def get_gstin(request):
+	payload = json.loads(request.body)
+	name = payload['data']
 	
 	temp = Client.objects.get(pk = name)
 	data ={}
@@ -39,8 +49,11 @@ def get_gstin(request, name):
 	json_data = json.dumps(data)
 	return HttpResponse(json_data, content_type="application/json")
 
+@csrf_exempt
 @login_required(login_url='/login/')
-def get_basic_rate(request, name):
+def get_basic_rate(request):
+	payload = json.loads(request.body)
+	name = payload['data']
 	
 	temp = Product.objects.get(pk = name)
 	data ={}
@@ -49,8 +62,11 @@ def get_basic_rate(request, name):
 	json_data = json.dumps(data)
 	return HttpResponse(json_data, content_type="application/json")
 
+@csrf_exempt
 @login_required(login_url='/login/')
-def get_city(request, name):
+def get_city(request):
+	payload = json.loads(request.body)
+	name = payload['data']
 	
 	temp = Client.objects.get(pk = name)
 	data ={}
