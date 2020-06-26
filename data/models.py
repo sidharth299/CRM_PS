@@ -124,8 +124,7 @@ class Dsr(models.Model):
     successful_sale = models.BooleanField(default = False, verbose_name = "Successful Sale")
     created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By")
     def __str__(self):
-        try:
-            return str(self.client_name) + ' : ' + self.action
+        return str(self.client_name) + ' : ' + self.action
 
     class Meta:
         verbose_name = 'daily sales report'
@@ -135,7 +134,7 @@ class Dsr(models.Model):
         res = validate_date(self.date_of_contact)
         if res:
            raise ValidationError(res)
-        if self.date_of_contact > self.next_call_date:
+        if self.date_of_contact!=None and self.next_call_date!=None and self.date_of_contact > self.next_call_date:
            raise ValidationError('Next call date should be after date of contact')
 
         if self.client_rank in [1,2,3,4,5] and self.successful_sale == True:
@@ -162,9 +161,9 @@ class Sample(models.Model):
         verbose_name_plural = 'Samples Sent'
 
     def clean(self):
-        res = validate_date(self.sent_date, self.updated_by)
+        res = validate_date(self.sent_date)
         if res:
-            raise ValidationError(res)
+           raise ValidationError(res)
 
 # only Admin/Accountants
 class Sale(models.Model):
@@ -194,7 +193,7 @@ class Sale(models.Model):
         verbose_name_plural = 'Sales Invoices'
 
     def clean(self):
-        res = validate_date(self.sale_date, self.updated_by)
+        res = validate_date(self.sale_date)
         if res:
             raise ValidationError(res)
 
@@ -227,7 +226,7 @@ class Payment(models.Model):
         verbose_name_plural = 'Payments Register'
 
     def clean(self):
-        res = validate_date(self.date, self.updated_by)
+        res = validate_date(self.date)
         if res:
             raise ValidationError(res)
 
@@ -236,9 +235,9 @@ class Target(models.Model):
     period            = models.CharField(max_length = MAX_PERIOD, verbose_name = "Period")
     big               = models.IntegerField(default = 0, verbose_name = "Big Ticket Customers (BTC)")
     other             = models.IntegerField(default = 0, verbose_name = "Other")
-    sale_value        = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "Sale Value")
-    lead_gen          = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "Leads Generated")
-    mnoc              = models.DecimalField(default=0, decimal_places = 2, max_digits = 5, verbose_name = "MNOC")
+    sale_value        = models.DecimalField(default = 0, decimal_places = 2, max_digits = 10, verbose_name = "Sale Value")
+    lead_gen          = models.DecimalField(default = 0, decimal_places = 2, max_digits = 10, verbose_name = "Leads Generated")
+    mnoc              = models.DecimalField(default = 0, decimal_places = 2, max_digits = 5, verbose_name = "MNOC")
     cross_sale        = models.IntegerField(default = 0, verbose_name = "Cross Sales")
     ref_sale          = models.IntegerField(default = 0, verbose_name = "Reference Sales")
     up_sale           = models.IntegerField(default = 0, verbose_name = "Up Sales")
@@ -247,10 +246,10 @@ class Target(models.Model):
     d_appointment     = models.IntegerField(default = 0, verbose_name = "D-Appointment")
     appr_letter       = models.IntegerField(default = 0, verbose_name = "Appreciation Letter")
     hit_ratio         = models.IntegerField(default = 0, verbose_name = "Hit Ratio")
-    ats               = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "ATS")
-    MTD_sales         = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "MTD Sales")
-    total_outstanding = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "Total Outstanding")
-    MTD_collection    = models.DecimalField(default=0, decimal_places = 2, max_digits = 10, verbose_name = "MTD Collection")
+    ats               = models.DecimalField(default = 0, decimal_places = 2, max_digits = 10, verbose_name = "ATS")
+    MTD_sales         = models.DecimalField(default = 0, decimal_places = 2, max_digits = 10, verbose_name = "MTD Sales")
+    total_outstanding = models.DecimalField(default = 0, decimal_places = 2, max_digits = 10, verbose_name = "Total Outstanding")
+    MTD_collection    = models.DecimalField(default = 0, decimal_places = 2, max_digits = 10, verbose_name = "MTD Collection")
 
     def __str__(self):
         return str(self.user_id)
@@ -268,6 +267,6 @@ class Entry(models.Model):
         return str(self.entry_type)
 
     def clean(self):
-        res = validate_date(self.entry_date, self.updated_by)
+        res = validate_date(self.entry_date)
         if res:
             raise ValidationError(res)

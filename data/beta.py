@@ -106,6 +106,10 @@ class SampleAdmin(admin.ModelAdmin):
 		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
+
+		user_session['is_superuser'] = request.user.is_superuser
+		user_session.save()
+
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
 		name = 'sample'
@@ -165,6 +169,10 @@ class EntryAdmin(admin.ModelAdmin):
 		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
+
+		user_session['is_superuser'] = request.user.is_superuser
+		user_session.save()
+		
 		form = super().get_form(request, obj, **kwargs)
 		dfields = []
 		name = 'entry'

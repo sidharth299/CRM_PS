@@ -27,7 +27,7 @@ class DsrAdmin(admin.ModelAdmin):
 
 		user_session['is_superuser'] = request.user.is_superuser
 		user_session.save()
-		
+
 		form = super(DsrAdmin,self).get_form(request, obj, **kwargs)
 		dfields = []
 		name = 'dsr'	
@@ -77,6 +77,10 @@ class SaleAdmin(admin.ModelAdmin):
 		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
+
+		user_session['is_superuser'] = request.user.is_superuser
+		user_session.save()
+
 		form = super().get_form(request, obj, **kwargs)
 		dfields = ['client_name']
 		name = 'sale'
@@ -253,6 +257,10 @@ class PaymentAdmin(admin.ModelAdmin):
 		return qs
 
 	def get_form(self, request, obj=None, **kwargs):
+
+		user_session['is_superuser'] = request.user.is_superuser
+		user_session.save()
+		
 		form = super().get_form(request, obj, **kwargs)
 		dfields = ['invoice_number']
 		name = 'payment'
