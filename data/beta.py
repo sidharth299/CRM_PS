@@ -220,4 +220,7 @@ class AssignAdmin(admin.ModelAdmin):
 		return False
 
 	def has_delete_permission(self, request, obj=None):
+		keyword = request.path.split('/')
+		if keyword[2] == 'client':
+			return True
 		return False
