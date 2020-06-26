@@ -1,5 +1,4 @@
 import json
-
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -57,8 +56,7 @@ def get_basic_rate(request):
 	
 	temp = Product.objects.get(pk = name)
 	data ={}
-	data['basic_rate'] = temp.basic_rate
-	
+	data['basic_rate'] = str(temp.basic_rate)
 	json_data = json.dumps(data)
 	return HttpResponse(json_data, content_type="application/json")
 
