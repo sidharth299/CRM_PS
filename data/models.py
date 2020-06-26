@@ -117,7 +117,7 @@ class Dsr(models.Model):
     date_of_contact = models.DateField(default = timezone.now,  verbose_name = "Date of Contact")
     action          = models.CharField(max_length = MAX_REMARKS,  verbose_name = "Action Taken")
     product_name    = models.ForeignKey(Product, blank = True, null = True,on_delete = models.PROTECT,  verbose_name = "Product Name")
-    next_call_date  = models.DateField(verbose_name = "Next Call Date")
+    next_call_date  = models.DateField(blank = True, null = True, verbose_name = "Next Call Date")
     sample_status   = models.CharField(blank = True, choices = CHOICES_SAMPLE_STATUS, max_length = MAX_SAMPLE_STATUS, verbose_name = "Sample Status")
     client_rank     = models.PositiveSmallIntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(7)], verbose_name = "Client Rank")
     failed_sale     = models.BooleanField(default = False, verbose_name = "Failed Sale")
@@ -132,6 +132,9 @@ class Dsr(models.Model):
     
     def clean(self):
         res = validate_date(self.date_of_contact)
+        if self.next_call_date == None or self.next_call_date == '':
+            if not self.successful_sale and not self.failed_sale:
+                raise ValidationError('Please enter the Next Call Date')
         if res:
            raise ValidationError(res)
         if self.date_of_contact!=None and self.next_call_date!=None and self.date_of_contact > self.next_call_date:
