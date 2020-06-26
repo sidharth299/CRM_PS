@@ -5,8 +5,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from datetime import datetime
 
-from django.contrib.sessions.backends.db import SessionStore
-
 from .constants import *
 from .dbconf import *
 
@@ -124,11 +122,9 @@ class Dsr(models.Model):
     client_rank     = models.PositiveSmallIntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(7)], verbose_name = "Client Rank")
     failed_sale     = models.BooleanField(default = False, verbose_name = "Failed Sale")
     successful_sale = models.BooleanField(default = False, verbose_name = "Successful Sale")
-    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By", related_name = 'created_by')
+    created_by      = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT, verbose_name = "Created By")
     def __str__(self):
         try:
-            return str(self.client_name) + ' : ' + self.updated_by
-        except:
             return str(self.client_name) + ' : ' + self.action
 
     class Meta:

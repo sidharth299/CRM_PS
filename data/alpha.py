@@ -27,7 +27,7 @@ class DsrAdmin(admin.ModelAdmin):
 
 		user_session['is_superuser'] = request.user.is_superuser
 		user_session.save()
-		print(user_session['is_superuser'])
+		
 		form = super(DsrAdmin,self).get_form(request, obj, **kwargs)
 		dfields = []
 		name = 'dsr'	
