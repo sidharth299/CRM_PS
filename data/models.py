@@ -20,13 +20,18 @@ def get_financial_year():
     return res
 
 def get_invoice_number():
-    invoice = Sale.objects.all().last()
+    p = Param.objects.filter(key = 'last_invoice').first()
     reset = False
     financial_year = get_financial_year()
-    if invoice == None:
+    if p == None:
+        p = Param(key = 'last_invoice', num = 0, alphanum=None)
+        p.save()
+        p = Param.objects.filter(key = 'last_invoice').first()
+        reset = True
+    elif p.alphanum == None:
         reset = True
     else:
-        temp = (invoice.invoice_number).split('~')
+        temp = p.alphanum.split('~')
         year = temp[1]
         if year == financial_year:
             res = int(temp[0])+1
@@ -34,15 +39,17 @@ def get_invoice_number():
             reset = True
     if reset:
         res = 1
-
+        
     response = str(res)+'~'+financial_year
 
+    p.alphanum = response
+    p.save()
     return response
 
 class Param(models.Model):
     key = models.CharField(max_length = 40, unique = True)
     num = models.IntegerField(default = 0)
-    alphanum = models.CharField(default = '', blank = True, max_length = 200)
+    alphanum = models.CharField(null = True, blank = True, max_length = 200)
 
 # add/changed by only admin
 class Product(models.Model):
@@ -176,7 +183,7 @@ class Sample(models.Model):
 # only Admin/Accountants
 class Sale(models.Model):
 
-    invoice_number  = models.CharField(default = get_invoice_number, max_length = MAX_INVOICE_NUMBER , primary_key = True, verbose_name = "Invoice Number")
+    invoice_number  = models.CharField(max_length = MAX_INVOICE_NUMBER , primary_key = True, verbose_name = "Invoice Number")
     sale_date       = models.DateField(default = timezone.now, verbose_name = "Sale Date")
     client_name     = models.ForeignKey(Client, on_delete = models.PROTECT, verbose_name = "Client Name")
     carting         = models.PositiveIntegerField(default = 0, verbose_name = "Carting")

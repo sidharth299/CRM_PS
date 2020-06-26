@@ -227,6 +227,8 @@ class SaleAdmin(admin.ModelAdmin):
 			obj.sgst = 0
 			obj.export_sale = 0
 			obj.total_amount = 0
+			obj.invoice_number = get_invoice_number()
+
 		# updating record
 		if change:
 			pass
