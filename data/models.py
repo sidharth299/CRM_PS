@@ -44,7 +44,7 @@ class Product(models.Model):
     product_name     = models.CharField(max_length = MAX_PRODUCT_NAME, primary_key=True, verbose_name = "Product Name")
     product_category = models.CharField(choices = CHOICES_PRODUCT_CATEGORY, max_length = MAX_PRODUCT_CATEGORY, verbose_name = "Product Type")
     hsn_code         = models.PositiveIntegerField(null=True, verbose_name = "HSN Code")
-    basic_rate       = models.PositiveIntegerField(verbose_name = "Basic Rate")
+    basic_rate       = models.DecimalField(decimal_places = 2, max_digits = 10,verbose_name = "Basic Rate")
     tax_rate         = models.DecimalField(default=18.00,decimal_places = 2, max_digits = 4, verbose_name = "Tax Rate")
     export_tax_rate  = models.DecimalField(default=0.1,decimal_places = 2, max_digits = 4, verbose_name = "Export Tax Rate")
     remarks          = models.CharField(blank = True, max_length = MAX_REMARKS, verbose_name = "Remarks")
@@ -202,7 +202,7 @@ class Bill(models.Model):
 
     invoice_number  = models.ForeignKey(Sale, on_delete = models.CASCADE, verbose_name = "Invoice Number")
     product_name    = models.ForeignKey(Product, on_delete = models.PROTECT, verbose_name = "Product Name")
-    basic_rate      = models.PositiveIntegerField(blank = True, null = True, verbose_name = "Basic Rate")
+    basic_rate      = models.DecimalField(blank = True, null = True, decimal_places = 2, max_digits = 10,verbose_name = "Basic Rate")
     quantity        = models.PositiveIntegerField(verbose_name = "Quantity")
 
     def __str__(self):
