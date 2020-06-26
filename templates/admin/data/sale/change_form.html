@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         else if (name.includes('id_bill_set')){
-            var url = "/data/get_basic_rate/" + chosenId;
-            
-            send_request('GET', url, '', callback);
+            var url = "/data/get_basic_rate/";
+            var data = {'data' : chosenId};
+            send_request('POST', url, data, callback);
 
             function callback(response) {
                 document.getElementById(name.replace('product_name','basic_rate')).setAttribute('value',response['basic_rate']);
