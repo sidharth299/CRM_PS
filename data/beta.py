@@ -221,6 +221,7 @@ class AssignAdmin(admin.ModelAdmin):
 
 	def has_delete_permission(self, request, obj=None):
 		keyword = request.path.split('/')
-		if keyword[2] == 'client':
+
+		if len(keyword)>=3 and keyword[2] == 'client' and request.user.is_superuser:
 			return True
 		return False
